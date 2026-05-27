@@ -40,28 +40,53 @@ using Printf
 # ----------------------------------------------------------------------
 
 struct Config
-    name::String           # short label, e.g. "2A"
-    n::Int                 # dimension
-    descr::String          # human-readable description
+    name::String                    # short label, e.g. "2A"
+    n::Int                          # dimension
+    descr::String                   # human-readable description
     μ::Vector{Float64}
     Σ::Matrix{Float64}
-    a::Vector{Float64}     # may contain -Inf
-    b::Vector{Float64}     # may contain +Inf
+    a::Vector{Float64}              # may contain -Inf
+    b::Vector{Float64}              # may contain +Inf
+    # If non-empty, only these κ are evaluated (and compared). When
+    # empty, the full order-≤4 multi-index set is used.
+    single_κ::Union{Nothing, Vector{Int}}
+    # If true, skip the direct-hcubature comparison (e.g. when the
+    # cubature on the full moment table is infeasible).
+    skip_hcubature::Bool
 end
 
-function bundled_config(label, n, idx, descr)
+function bundled_config(label, n, idx, descr;
+                        single_κ = nothing, skip_hcubature = false)
     ex = TruncatedDistributions.get_example(n = n, index = idx)
     return Config(label, n, descr,
                   Vector{Float64}(ex.μ), Matrix{Float64}(ex.Σ),
-                  Vector{Float64}(ex.a), Vector{Float64}(ex.b))
+                  Vector{Float64}(ex.a), Vector{Float64}(ex.b),
+                  single_κ, skip_hcubature)
 end
 
 const CONFIGS = [
+    # --- KR vs hcubature on the full moment table (n = 2, 3) ---
     bundled_config("2A", 2, 1, "bundled n=2 ex 1: off-centre, mild correlation"),
     bundled_config("2B", 2, 4, "bundled n=2 ex 4: centred, mildly correlated, tight box"),
     bundled_config("3A", 3, 1, "bundled n=3 ex 1: off-centre, finite asymmetric box"),
     bundled_config("3G", 3, 3, "Genz–Bretz Phi3ex (G&B 2009 §1.3.1): centred, semi-infinite"),
-    bundled_config("4A", 4, 1, "bundled n=4 ex 1: off-centre, finite asymmetric box"),
+    # --- Single complicated 4th-order moment at n = 4 ---
+    # Direct hcubature on all 70 moments is too slow at the reference
+    # tolerance; the joint cross-moment κ = (1,1,1,1) is enough to
+    # show that even one 4D quartic-Gaussian integral is slower than
+    # the KR pipeline computing the whole 70-moment table.
+    bundled_config("4A", 4, 1,
+                   "bundled n=4 ex 1: single κ = (1,1,1,1)";
+                   single_κ = [1, 1, 1, 1]),
+    # --- KR-only scalability sweep (n = 5, 6, 7) ---
+    # hcubature on the full moment table is infeasible at these n,
+    # so we report only the KR pipeline.
+    bundled_config("5",  5, 1, "bundled n=5 ex 1: light truncation, tridiag Σ";
+                   skip_hcubature = true),
+    bundled_config("6",  6, 1, "bundled n=6 ex 1: light truncation, tridiag Σ";
+                   skip_hcubature = true),
+    bundled_config("7",  7, 1, "bundled n=7 ex 1: light truncation, tridiag Σ";
+                   skip_hcubature = true),
 ]
 
 # ----------------------------------------------------------------------
@@ -141,10 +166,14 @@ function moments_hcubature(cfg::Config, κs; rtol, atol, maxevals = 50_000_000)
     return out
 end
 
-# Reference: tight-tolerance hcubature.
+# Reference: tight-tolerance hcubature. rtol = 1e-8 is more than
+# four orders of magnitude tighter than either method being measured
+# (Genz–Bretz QMC at m = 10_000 reaches ~1e-2 on the worst moments;
+# direct adaptive cubature at rtol = 1e-6 reaches ~1e-6 by request).
+# Tightening further to 1e-12 makes the n = 4 reference prohibitive.
 moments_reference(cfg::Config, κs) =
-    moments_hcubature(cfg, κs; rtol = 1e-12, atol = 1e-14,
-                      maxevals = 200_000_000)
+    moments_hcubature(cfg, κs; rtol = 1e-8, atol = 1e-12,
+                      maxevals = 50_000_000)
 
 # ----------------------------------------------------------------------
 # Accuracy metric: max relative error across the moments (absolute when
@@ -185,24 +214,34 @@ fmt_speedup(s) = @sprintf("%.0f\\times", s)
 struct ConfigResult
     name::String
     n::Int
-    M::Int          # number of moments (= binom(n+4, 4))
+    M::Int                      # number of moments evaluated
     kr_time::Float64
     kr_err::Float64
-    hc_time::Float64
-    hc_err::Float64
+    hc_time::Union{Float64, Nothing}   # `nothing` if skipped
+    hc_err::Union{Float64, Nothing}
 end
 
-function run_config(cfg::Config; kr_samples = 20, kr_seconds = 10,
-                                 hc_samples = 3, hc_seconds = 120)
-    κs = multiindices(cfg.n, 4)
+function run_config(cfg::Config; kr_samples = 5, kr_seconds = 30,
+                                 hc_samples = 2, hc_seconds = 60)
+    κs = cfg.single_κ === nothing ? multiindices(cfg.n, 4) : [cfg.single_κ]
     M = length(κs)
+
+    if cfg.skip_hcubature
+        @info "config $(cfg.name) (n = $(cfg.n), M = $M): KR only (skip_hcubature)"
+        # No reference: kr_err is reported as NaN for the scalability sweep.
+        moments_kr = moments_kr_qmc(cfg, κs)
+        kr_time = @belapsed moments_kr_qmc($cfg, $κs) samples=kr_samples seconds=kr_seconds
+        r = ConfigResult(cfg.name, cfg.n, M, kr_time, NaN, nothing, nothing)
+        @info "config $(cfg.name): DONE  KR $(fmt_time(r.kr_time))  (no hcubature reference)"
+        return r
+    end
 
     @info "config $(cfg.name) (n = $(cfg.n), M = $M): computing tight-tolerance reference..."
     t_ref = @elapsed (ref = moments_reference(cfg, κs))
-    @info "config $(cfg.name): reference ready in $(round(t_ref, digits = 2)) s, m^{(0)} = $(round(ref[zeros(Int, cfg.n)], sigdigits = 6))"
+    @info "config $(cfg.name): reference ready in $(round(t_ref, digits = 2)) s"
 
     @info "config $(cfg.name): timing KR + Genz–Bretz QMC..."
-    moments_kr = moments_kr_qmc(cfg, κs)  # warm-up & accuracy
+    moments_kr = moments_kr_qmc(cfg, κs)
     kr_err = max_relerr(moments_kr, ref, κs)
     kr_time = @belapsed moments_kr_qmc($cfg, $κs) samples=kr_samples seconds=kr_seconds
 
@@ -212,7 +251,10 @@ function run_config(cfg::Config; kr_samples = 20, kr_seconds = 10,
     hc_time = @belapsed moments_hcubature($cfg, $κs;
                                           rtol = 1e-6, atol = 1e-10) samples=hc_samples seconds=hc_seconds
 
-    return ConfigResult(cfg.name, cfg.n, M, kr_time, kr_err, hc_time, hc_err)
+    r = ConfigResult(cfg.name, cfg.n, M, kr_time, kr_err, hc_time, hc_err)
+    speedup = r.hc_time / r.kr_time
+    @info "config $(cfg.name): DONE  KR $(fmt_time(r.kr_time)) ($(fmt_err(r.kr_err)))  HC $(fmt_time(r.hc_time)) ($(fmt_err(r.hc_err)))  speedup $(fmt_speedup(speedup))"
+    return r
 end
 
 # ----------------------------------------------------------------------
@@ -237,20 +279,33 @@ function main()
             "", "", "", "time (s) / max rel err", "time (s) / max rel err", "")
     println("-"^85)
     for r in results
-        speedup = r.hc_time / r.kr_time
-        @printf("%-6s | %3d | %4d | %.3e s / %.2e   | %.3e s / %.2e   | %6.1fx\n",
-                r.name, r.n, r.M, r.kr_time, r.kr_err, r.hc_time, r.hc_err, speedup)
+        kr_s = @sprintf("%.3e s / %s", r.kr_time, isnan(r.kr_err) ? "  --  " : @sprintf("%.2e", r.kr_err))
+        if r.hc_time === nothing
+            @printf("%-6s | %3d | %4d | %-23s | %-23s | %-8s\n",
+                    r.name, r.n, r.M, kr_s, "  (skipped)", "  --")
+        else
+            speedup = r.hc_time / r.kr_time
+            hc_s = @sprintf("%.3e s / %.2e", r.hc_time, r.hc_err)
+            @printf("%-6s | %3d | %4d | %s   | %s | %6.1fx\n",
+                    r.name, r.n, r.M, kr_s, hc_s, speedup)
+        end
     end
 
     println()
     println("LaTeX table rows (paste into tab:kr-bench):")
     for r in results
-        speedup = r.hc_time / r.kr_time
-        @printf("%s & %d & %d & %s & %s & %s & %s & %s \\\\\n",
-                r.name, r.n, r.M,
-                fmt_time(r.kr_time), fmt_err(r.kr_err),
-                fmt_time(r.hc_time), fmt_err(r.hc_err),
-                fmt_speedup(speedup))
+        kr_err_str = isnan(r.kr_err) ? "--" : fmt_err(r.kr_err)
+        if r.hc_time === nothing
+            @printf("%s & %d & %d & %s & %s & -- & -- & -- \\\\\n",
+                    r.name, r.n, r.M, fmt_time(r.kr_time), kr_err_str)
+        else
+            speedup = r.hc_time / r.kr_time
+            @printf("%s & %d & %d & %s & %s & %s & %s & %s \\\\\n",
+                    r.name, r.n, r.M,
+                    fmt_time(r.kr_time), kr_err_str,
+                    fmt_time(r.hc_time), fmt_err(r.hc_err),
+                    fmt_speedup(speedup))
+        end
     end
 
     return results
