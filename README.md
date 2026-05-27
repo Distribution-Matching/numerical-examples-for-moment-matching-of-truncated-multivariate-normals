@@ -7,13 +7,18 @@ Reproducibility scripts for the numerical examples in the paper
 ## Companion artefacts
 
 - Paper source: <https://github.com/Distribution-Matching/paper-truncated-mv-normal>
-- Julia package: <https://github.com/yoninazarathy/TruncatedDistributions.jl>
+- Julia package: <https://github.com/Distribution-Matching/TruncatedDistributions.jl>
 
 ## Layout
 
 ```
-experiments/   # one Julia script per numerical example in the paper
-output/        # generated tables and figures (gitignored)
+experiments/moment_table.jl      # §4 K-R vs hcubature comparison
+experiments/gradient_table.jl    # §4 closed-form vs FD vs AD
+experiments/results/             # captured benchmark outputs
+experiments/package-legacy/      # earlier benchmark scripts that
+                                 #   used to live in
+                                 #   TruncatedDistributions.jl/test/
+                                 #   experiments
 ```
 
 ## Running
@@ -24,12 +29,4 @@ Scripts are plain Julia, runnable from the top of this repo:
 julia --project=experiments experiments/<name>.jl
 ```
 
-Each script declares its own dependencies via `experiments/Project.toml`
-(once initialised).
-
-## Status
-
-This repo is intentionally minimal and is expected to grow alongside
-the paper. The first planned experiment is the §4 comparison of the
-35-moment table at $n = 3$ computed via the Kan--Robotti recursion
-plus Genz--Bretz QMC against direct adaptive cubature.
+Dependencies are declared in `experiments/Project.toml`.
