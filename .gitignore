@@ -9,7 +9,7 @@ deps/usr/
 deps/src/
 docs/build/
 docs/site/
-Manifest.toml
+# Manifest.toml deliberately tracked under experiments/ for reproducibility.
 
 # macOS
 .DS_Store
