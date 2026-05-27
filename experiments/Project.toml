@@ -15,4 +15,4 @@ TruncatedDistributions = "77af390e-3af4-4cd8-bbfa-7ab7569c172d"
 # until the registry version catches up. Manifest.toml records the
 # precise commit for reproducibility.
 [sources]
-TruncatedDistributions = {url = "https://github.com/yoninazarathy/TruncatedDistributions.jl"}
+TruncatedDistributions = {url = "https://github.com/Distribution-Matching/TruncatedDistributions.jl"}
