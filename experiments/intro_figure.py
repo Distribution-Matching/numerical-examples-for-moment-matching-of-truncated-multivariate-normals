@@ -101,14 +101,22 @@ def main(outdir="."):
                                ((1, 2), "x", LO[0])):
         gi, gj, dens = wall_marginal(pair)
         GI, GJ = np.meshgrid(gi, gj, indexing="ij")
-        kw = dict(levels=9, cmap=pale, alpha=0.35, zorder=1,
-                  vmax=2.2 * dens.max())
+        kw = dict(levels=11, cmap=pale, alpha=0.55, zorder=1,
+                  vmax=1.35 * dens.max())
+        (i, j) = pair
+        # Dashed frame: the box footprint projected onto the pane.
+        fi = [A[i], B[i], B[i], A[i], A[i]]
+        fj = [A[j], A[j], B[j], B[j], A[j]]
+        frame_kw = dict(color="0.45", lw=0.9, ls=(0, (4, 3)), zorder=2)
         if zdir == "z":
             ax.contourf(GI, GJ, dens, zdir="z", offset=offset, **kw)
+            ax.plot(fi, fj, np.full(5, offset), **frame_kw)
         elif zdir == "y":
             ax.contourf(GI, dens, GJ, zdir="y", offset=offset, **kw)
+            ax.plot(fi, np.full(5, offset), fj, **frame_kw)
         else:
             ax.contourf(dens, GI, GJ, zdir="x", offset=offset, **kw)
+            ax.plot(np.full(5, offset), fi, fj, **frame_kw)
 
     # Rejected draws: grey, receding.
     ax.scatter(x[~inside, 0], x[~inside, 1], x[~inside, 2],
@@ -120,7 +128,7 @@ def main(outdir="."):
     ylorrd = matplotlib.colors.ListedColormap(
         plt.get_cmap("YlOrRd")(np.linspace(0.3, 1.0, 256)))
     ax.scatter(x[inside, 0], x[inside, 1], x[inside, 2],
-               c=pdf_in, cmap=ylorrd, s=9, alpha=0.85,
+               c=pdf_in, cmap=ylorrd, s=6, alpha=0.85,
                linewidths=0, zorder=10)
 
     box_wireframe(ax)
