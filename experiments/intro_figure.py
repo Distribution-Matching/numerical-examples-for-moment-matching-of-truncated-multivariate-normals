@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Figure for the paper's introduction: the worked n = 3 example.
 
-Draws samples of the *fitted* box-truncated normal N(mu*, Sigma*) | A
-(whose truncated moments equal the desired (mu_hat, Sigma_hat)) as a 3-D
-point cloud, with the exact bivariate marginal densities of the truncated
-law painted on three walls of the box.
+Draws samples of the *fitted* untruncated normal N(mu*, Sigma*); the
+draws landing inside the truncation box A are coloured by the density
+(the point cloud itself carries the density information), the rejected
+draws outside A are greyed out, and A is drawn as a dark wireframe
+strictly inside the axes. Pale projections of the truncated law's
+bivariate marginals sit on the far axis panes.
 
 (mu*, Sigma*) is the output of TruncatedDistributions.fit_mvnormal for
 the targets quoted in the introduction (loss ~ 2e-11); see the paper.
@@ -33,7 +35,11 @@ SIGMA = np.array([
 A = np.array([-1.0, -2.0, -1.5])
 B = np.array([2.0, 1.0, 1.0])
 
-N_DOTS = 1400
+# Axis limits: the box sits strictly inside the axes.
+LO = np.array([-2.6, -3.4, -3.0])
+HI = np.array([3.6, 2.6, 2.4])
+
+N_TOTAL = 2450  # ~57% land inside A, i.e. ~1400 accepted draws
 
 
 def gauss_pdf(x, mu, sig_inv, log_norm):
@@ -44,17 +50,6 @@ def gauss_pdf(x, mu, sig_inv, log_norm):
 
 SIG_INV = np.linalg.inv(SIGMA)
 LOG_NORM = -0.5 * (3 * np.log(2 * np.pi) + np.log(np.linalg.det(SIGMA)))
-
-
-def sample_truncated(n):
-    out = []
-    L = np.linalg.cholesky(SIGMA)
-    while sum(len(o) for o in out) < n:
-        z = rng.standard_normal((4 * n, 3))
-        x = MU + z @ L.T
-        keep = np.all((x >= A) & (x <= B), axis=1)
-        out.append(x[keep])
-    return np.concatenate(out)[:n]
 
 
 def wall_marginal(ax_pair, n_grid=90, n_quad=48):
@@ -77,51 +72,66 @@ def wall_marginal(ax_pair, n_grid=90, n_quad=48):
     return gi, gj, dens
 
 
-def main(outdir="."):
-    x = sample_truncated(N_DOTS)
-
-    fig = plt.figure(figsize=(6.6, 5.4))
-    ax = fig.add_subplot(projection="3d")
-
-    cmap_wall = plt.get_cmap("Blues")
-    dot_color = "#b0421f"
-
-    # Walls: (x1,x2) painted at x3 = A[2]; (x1,x3) at x2 = B[1];
-    # (x2,x3) at x1 = A[0].
-    g1, g2, d12 = wall_marginal((0, 1))
-    G1, G2 = np.meshgrid(g1, g2, indexing="ij")
-    ax.contourf(G1, G2, d12, zdir="z", offset=A[2], levels=14,
-                cmap=cmap_wall, alpha=0.85, zorder=1)
-
-    g1, g3, d13 = wall_marginal((0, 2))
-    G1, G3 = np.meshgrid(g1, g3, indexing="ij")
-    ax.contourf(G1, d13, G3, zdir="y", offset=B[1], levels=14,
-                cmap=cmap_wall, alpha=0.85, zorder=1)
-
-    g2, g3, d23 = wall_marginal((1, 2))
-    G2, G3 = np.meshgrid(g2, g3, indexing="ij")
-    ax.contourf(d23, G2, G3, zdir="x", offset=A[0], levels=14,
-                cmap=cmap_wall, alpha=0.85, zorder=1)
-
-    # Dots.
-    ax.scatter(x[:, 0], x[:, 1], x[:, 2], color=dot_color,
-               s=7.5, alpha=0.55, linewidths=0, zorder=10)
-
-    # Box wireframe.
+def box_wireframe(ax):
     corners = [(xx, yy, zz) for xx in (A[0], B[0]) for yy in (A[1], B[1])
                for zz in (A[2], B[2])]
     for p in corners:
         for q in corners:
             diff = [abs(p[m] - q[m]) > 0 for m in range(3)]
             if sum(diff) == 1 and p < q:
-                ax.plot(*zip(p, q), color="0.35", lw=0.8, zorder=5)
+                ax.plot(*zip(p, q), color="0.15", lw=1.3, zorder=6)
 
-    ax.set_xlim(A[0], B[0])
-    ax.set_ylim(A[1], B[1])
-    ax.set_zlim(A[2], B[2])
-    ax.set_xticks([0, 1])
-    ax.set_yticks([-1, 0])
-    ax.set_zticks([-1, 0])
+
+def main(outdir="."):
+    L = np.linalg.cholesky(SIGMA)
+    x = MU + rng.standard_normal((N_TOTAL, 3)) @ L.T
+    # Drop the handful of draws beyond the axis limits.
+    x = x[np.all((x >= LO) & (x <= HI), axis=1)]
+    inside = np.all((x >= A) & (x <= B), axis=1)
+    pdf_in = gauss_pdf(x[inside], MU, SIG_INV, LOG_NORM)
+
+    fig = plt.figure(figsize=(7.0, 5.7))
+    ax = fig.add_subplot(projection="3d")
+
+    # Pale marginal projections of the *truncated* law on the far axis
+    # panes (deliberately understated; the point cloud is the subject).
+    pale = plt.get_cmap("Blues")
+    for pair, zdir, offset in (((0, 1), "z", LO[2]),
+                               ((0, 2), "y", HI[1]),
+                               ((1, 2), "x", LO[0])):
+        gi, gj, dens = wall_marginal(pair)
+        GI, GJ = np.meshgrid(gi, gj, indexing="ij")
+        kw = dict(levels=9, cmap=pale, alpha=0.35, zorder=1,
+                  vmax=2.2 * dens.max())
+        if zdir == "z":
+            ax.contourf(GI, GJ, dens, zdir="z", offset=offset, **kw)
+        elif zdir == "y":
+            ax.contourf(GI, dens, GJ, zdir="y", offset=offset, **kw)
+        else:
+            ax.contourf(dens, GI, GJ, zdir="x", offset=offset, **kw)
+
+    # Rejected draws: grey, receding.
+    ax.scatter(x[~inside, 0], x[~inside, 1], x[~inside, 2],
+               color="0.62", s=3.5, alpha=0.35, linewidths=0, zorder=4)
+
+    # Accepted draws: coloured by density — the cloud carries the
+    # density information. Clip the low end of the colormap so the
+    # faintest dots stay visible against white.
+    ylorrd = matplotlib.colors.ListedColormap(
+        plt.get_cmap("YlOrRd")(np.linspace(0.3, 1.0, 256)))
+    ax.scatter(x[inside, 0], x[inside, 1], x[inside, 2],
+               c=pdf_in, cmap=ylorrd, s=9, alpha=0.85,
+               linewidths=0, zorder=10)
+
+    box_wireframe(ax)
+
+    ax.set_xlim(LO[0], HI[0])
+    ax.set_ylim(LO[1], HI[1])
+    ax.set_zlim(LO[2], HI[2])
+    ax.set_xticks([-1, 0, 1, 2])
+    ax.set_yticks([-2, -1, 0, 1])
+    ax.set_zticks([-1.5, 0, 1])
+    ax.set_zticklabels(["-1.5", "0", "1"])
     ax.set_xlabel(r"$x_1$", labelpad=-2)
     ax.set_ylabel(r"$x_2$", labelpad=-2)
     ax.set_zlabel(r"$x_3$", labelpad=-6)
@@ -130,15 +140,17 @@ def main(outdir="."):
         axis.pane.fill = False
         axis.pane.set_edgecolor("0.85")
     ax.grid(False)
-    ax.view_init(elev=18, azim=-62)
-    ax.set_box_aspect((B[0] - A[0], B[1] - A[1], B[2] - A[2]))
+    ax.view_init(elev=17, azim=-63)
+    ax.set_box_aspect((HI[0] - LO[0], HI[1] - LO[1], HI[2] - LO[2]))
     fig.tight_layout(pad=0.2)
 
     fig.savefig(f"{outdir}/intro_example.png", dpi=220,
                 bbox_inches="tight", pad_inches=0.05)
     fig.savefig(f"{outdir}/intro_example.pdf",
                 bbox_inches="tight", pad_inches=0.05)
-    print(f"wrote {outdir}/intro_example.[pdf|png]")
+    n_in = int(inside.sum())
+    print(f"wrote {outdir}/intro_example.[pdf|png]  "
+          f"({n_in} inside, {len(x) - n_in} outside)")
 
 
 if __name__ == "__main__":
