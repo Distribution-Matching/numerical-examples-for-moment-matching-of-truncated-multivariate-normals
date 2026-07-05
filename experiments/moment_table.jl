@@ -35,6 +35,10 @@ using BenchmarkTools
 using LinearAlgebra
 using Printf
 
+# All paper timings are single-thread: multithreaded OpenBLAS thrashes
+# on the recursion's many tiny (k ≤ n) triangular solves.
+BLAS.set_num_threads(1)
+
 # ----------------------------------------------------------------------
 # Configurations
 # ----------------------------------------------------------------------
@@ -78,15 +82,9 @@ const CONFIGS = [
     bundled_config("4A", 4, 1,
                    "bundled n=4 ex 1: single κ = (1,1,1,1)";
                    single_κ = [1, 1, 1, 1]),
-    # --- KR-only scalability sweep (n = 5, 6, 7) ---
-    # hcubature on the full moment table is infeasible at these n,
-    # so we report only the KR pipeline.
-    bundled_config("5",  5, 1, "bundled n=5 ex 1: light truncation, tridiag Σ";
-                   skip_hcubature = true),
-    bundled_config("6",  6, 1, "bundled n=6 ex 1: light truncation, tridiag Σ";
-                   skip_hcubature = true),
-    bundled_config("7",  7, 1, "bundled n=7 ex 1: light truncation, tridiag Σ";
-                   skip_hcubature = true),
+    # The former KR-only scalability sweep (n = 5, 6, 7) has moved to
+    # gradient_table.jl, where the closed-form gradient column carries
+    # the same scaling information for the paper's Table 2.
 ]
 
 # ----------------------------------------------------------------------

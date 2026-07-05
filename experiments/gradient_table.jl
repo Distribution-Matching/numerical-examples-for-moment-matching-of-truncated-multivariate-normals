@@ -41,6 +41,10 @@ using LinearAlgebra
 using Printf
 using Random
 
+# All paper timings are single-thread: multithreaded OpenBLAS thrashes
+# on the recursion's many tiny (k ≤ n) triangular solves.
+BLAS.set_num_threads(1)
+
 # ----------------------------------------------------------------------
 # pack / unpack between θ vector and (μ, U)
 # ----------------------------------------------------------------------
@@ -185,7 +189,17 @@ const CONFIGS = [
     bundled_grad_config("2B", 2, 4, "bundled n=2 ex 4"),
     # n = 3: bundled
     bundled_grad_config("3A", 3, 1, "bundled n=3 ex 1"),
+    # n = 4, ..., 7: closed-form only. AD and FD drive generic
+    # adaptive cubature whose cost is exponential in n; a single FD
+    # gradient at n = 4 already exceeds the 60 s cap used in §6.
+    bundled_grad_config("4A", 4, 1, "bundled n=4 ex 1"),
+    bundled_grad_config("5A", 5, 1, "bundled n=5 ex 1"),
+    bundled_grad_config("6A", 6, 1, "bundled n=6 ex 1"),
+    bundled_grad_config("7A", 7, 1, "bundled n=7 ex 1"),
 ]
+
+# AD / FD are only benchmarked at n ≤ AD_FD_MAX_N.
+const AD_FD_MAX_N = 3
 
 # ----------------------------------------------------------------------
 # For each config: build the θ at which we time each gradient method,
@@ -218,7 +232,8 @@ end
 # Formatters
 # ----------------------------------------------------------------------
 
-fmt_time(t) = t < 1e-3 ? @sprintf("%.0f\\,\\textmu s", t * 1e6) :
+fmt_time(t) = isnan(t) ? "--" :
+              t < 1e-3 ? @sprintf("%.0f\\,\\textmu s", t * 1e6) :
               t < 1.0  ? @sprintf("%.1f\\,ms",        t * 1e3) :
                          @sprintf("%.2f\\,s",         t)
 
@@ -252,18 +267,22 @@ function run_grad(cfg::GradConfig; bench_samples = 3, bench_seconds = 30)
     g_exp = grad_explicit(n, μ_pert, Σ_pert, cfg.a, cfg.b, μ̂, Σ̂)
     t_exp = @belapsed grad_explicit($n, $μ_pert, $Σ_pert, $cfg.a, $cfg.b, $μ̂, $Σ̂) samples=bench_samples seconds=bench_seconds
 
-    @info "    forward-mode AD..."
-    g_ad = grad_forwarddiff(n, θ_pert, cfg.a, cfg.b, μ̂, Σ̂)
-    t_ad = @belapsed grad_forwarddiff($n, $θ_pert, $cfg.a, $cfg.b, $μ̂, $Σ̂) samples=bench_samples seconds=bench_seconds
+    if n <= AD_FD_MAX_N
+        @info "    forward-mode AD..."
+        g_ad = grad_forwarddiff(n, θ_pert, cfg.a, cfg.b, μ̂, Σ̂)
+        t_ad = @belapsed grad_forwarddiff($n, $θ_pert, $cfg.a, $cfg.b, $μ̂, $Σ̂) samples=bench_samples seconds=bench_seconds
 
-    @info "    finite differences..."
-    g_fd = grad_finitediff(n, θ_pert, cfg.a, cfg.b, μ̂, Σ̂)
-    t_fd = @belapsed grad_finitediff($n, $θ_pert, $cfg.a, $cfg.b, $μ̂, $Σ̂) samples=bench_samples seconds=bench_seconds
+        @info "    finite differences..."
+        g_fd = grad_finitediff(n, θ_pert, cfg.a, cfg.b, μ̂, Σ̂)
+        t_fd = @belapsed grad_finitediff($n, $θ_pert, $cfg.a, $cfg.b, $μ̂, $Σ̂) samples=bench_samples seconds=bench_seconds
 
-    # Relative errors versus the closed-form gradient.
-    g_ref_norm = max(norm(g_exp), 1e-15)
-    err_ad = norm(g_ad .- g_exp) / g_ref_norm
-    err_fd = norm(g_fd .- g_exp) / g_ref_norm
+        # Relative errors versus the closed-form gradient.
+        g_ref_norm = max(norm(g_exp), 1e-15)
+        err_ad = norm(g_ad .- g_exp) / g_ref_norm
+        err_fd = norm(g_fd .- g_exp) / g_ref_norm
+    else
+        t_ad = NaN; t_fd = NaN; err_ad = NaN; err_fd = NaN
+    end
 
     r = GradResult(cfg.name, n, P, t_exp, t_fd, t_ad, err_ad, err_fd)
     @info @sprintf("    DONE  explicit %s   AD %s (err %.1e)   FD %s (err %.1e)",

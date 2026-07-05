@@ -1,0 +1,65 @@
+  Activating project at `~/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments`
+
+================================================================================
+Gradient benchmark for §4 of the paper
+================================================================================
+[ Info: config 1A (n = 1, P = 2 parameters): n=1: μ=0, σ=1, A=[-1, 1]
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 26\,\textmu s   AD 11\,\textmu s (err 7.4e-15)   FD 32\,\textmu s (err 1.0e-04)
+[ Info: config 1B (n = 1, P = 2 parameters): n=1: μ=0.5, σ=1.5, A=[-1, 2]
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 25\,\textmu s   AD 11\,\textmu s (err 3.3e-14)   FD 31\,\textmu s (err 1.3e-04)
+[ Info: config 2A (n = 2, P = 5 parameters): bundled n=2 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 553\,\textmu s   AD 9.9\,ms (err 1.6e-08)   FD 40.3\,ms (err 4.4e-04)
+[ Info: config 2B (n = 2, P = 5 parameters): bundled n=2 ex 4
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 469\,\textmu s   AD 3.8\,ms (err 4.6e-05)   FD 16.8\,ms (err 1.3e-04)
+[ Info: config 3A (n = 3, P = 9 parameters): bundled n=3 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 5.5\,ms   AD 2.15\,s (err 3.0e-05)   FD 6.79\,s (err 6.0e-04)
+[ Info: config 4A (n = 4, P = 14 parameters): bundled n=4 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 34.1\,ms   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 5A (n = 5, P = 20 parameters): bundled n=5 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 459.0\,ms   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 6A (n = 6, P = 27 parameters): bundled n=6 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 5.38\,s   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 7A (n = 7, P = 35 parameters): bundled n=7 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 78.66\,s   AD -- (err NaN)   FD -- (err NaN)
+
+Cfg  |   n |   P | explicit      | ForwardDiff   | FD (h=1e-5)   | AD err / FD err
+------------------------------------------------------------------------------------------
+1A   |   1 |   2 | 26\,\textmu s | 11\,\textmu s | 32\,\textmu s | 7.4e-15 / 1.0e-04
+1B   |   1 |   2 | 25\,\textmu s | 11\,\textmu s | 31\,\textmu s | 3.3e-14 / 1.3e-04
+2A   |   2 |   5 | 553\,\textmu s | 9.9\,ms       | 40.3\,ms      | 1.6e-08 / 4.4e-04
+2B   |   2 |   5 | 469\,\textmu s | 3.8\,ms       | 16.8\,ms      | 4.6e-05 / 1.3e-04
+3A   |   3 |   9 | 5.5\,ms       | 2.15\,s       | 6.79\,s       | 3.0e-05 / 6.0e-04
+4A   |   4 |  14 | 34.1\,ms      | --            | --            | NaN / NaN
+5A   |   5 |  20 | 459.0\,ms     | --            | --            | NaN / NaN
+6A   |   6 |  27 | 5.38\,s       | --            | --            | NaN / NaN
+7A   |   7 |  35 | 78.66\,s      | --            | --            | NaN / NaN
+
+LaTeX rows (paste into tab:grad-bench):
+1A & 1 & 2 & 26\,\textmu s & 11\,\textmu s & 32\,\textmu s & 7e-15 & 1.0e-04 \\
+1B & 1 & 2 & 25\,\textmu s & 11\,\textmu s & 31\,\textmu s & 3e-14 & 1.3e-04 \\
+2A & 2 & 5 & 553\,\textmu s & 9.9\,ms & 40.3\,ms & 1.6e-08 & 4.4e-04 \\
+2B & 2 & 5 & 469\,\textmu s & 3.8\,ms & 16.8\,ms & 4.6e-05 & 1.3e-04 \\
+3A & 3 & 9 & 5.5\,ms & 2.15\,s & 6.79\,s & 3.0e-05 & 6.0e-04 \\
+4A & 4 & 14 & 34.1\,ms & -- & -- & -- & -- \\
+5A & 5 & 20 & 459.0\,ms & -- & -- & -- & -- \\
+6A & 6 & 27 & 5.38\,s & -- & -- & -- & -- \\
+7A & 7 & 35 & 78.66\,s & -- & -- & -- & -- \\

@@ -1,0 +1,28 @@
+  Activating project at `~/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments`
+Panel targets: KR moments (n ≤ 6) / rejection sampling (n ≥ 7), rounded to 1 decimal.
+Caps: 50 iterations, 60.0 s, target L < 0.001.
+[ Info: warmup (JIT)...
+
+==============================================================================
+Table B: coordinate warm-start ablation (LBFGS-explicit vs +WS)
+==============================================================================
+2.1   m0=0.86  plain 0.01 / 5.8e-04  +WS 0.01 / 5.0e-04 (ws 0.000s)
+2.2   m0=0.44  plain 0.01 / 7.5e-04  +WS 0.01 / 6.1e-04 (ws 0.000s)
+2.3   m0=0.40  plain 0.00 / 9.8e-04  +WS 0.12 / 4.2e-02 (ws 0.000s)
+2.4   m0=0.60  plain 0.00 / 5.5e-04  +WS 0.00 / 3.3e-04 (ws 0.000s)
+3.1   m0=0.86  plain 0.09 / 7.4e-04  +WS 0.09 / 7.4e-04 (ws 0.000s)
+3.2   m0=0.51  plain 0.04 / 7.1e-04  +WS 0.02 / 9.3e-04 (ws 0.000s)
+4.1   m0=0.83  plain 1.24 / 9.9e-04  +WS 0.78 / 9.2e-04 (ws 0.000s)
+5.1   m0=0.80  plain 1.31 / 8.7e-04  +WS 1.31 / 6.3e-04 (ws 0.000s)
+5.2   m0=0.51  plain 1.25 / 8.4e-04  +WS 1.21 / 1.2e-04 (ws 0.000s)
+
+LaTeX rows (Table B):
+2.1 & box & 0.86 & 0.01 / 5.8e-04 & 0.01 / 5.0e-04 \\
+2.2 & box & 0.44 & 0.01 / 7.5e-04 & 0.01 / 6.1e-04 \\
+2.3 & M.W. semi-inf. & 0.40 & 0.00 / 9.8e-04 & 0.12 / 4.2e-02 \\
+2.4 & box & 0.60 & 0.00 / 5.5e-04 & 0.00 / 3.3e-04 \\
+3.1 & cube & 0.86 & 0.09 / 7.4e-04 & 0.09 / 7.4e-04 \\
+3.2 & semi-inf. & 0.51 & 0.04 / 7.1e-04 & 0.02 / 9.3e-04 \\
+4.1 & box & 0.83 & 1.24 / 9.9e-04 & 0.78 / 9.2e-04 \\
+5.1 & [-2,2]^5 & 0.80 & 1.31 / 8.7e-04 & 1.31 / 6.3e-04 \\
+5.2 & [-1.5,1.5]^5 & 0.51 & 1.25 / 8.4e-04 & 1.21 / 1.2e-04 \\
