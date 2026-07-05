@@ -39,7 +39,7 @@ B = np.array([2.0, 1.0, 1.0])
 LO = np.array([-2.6, -3.4, -3.0])
 HI = np.array([3.6, 2.6, 2.4])
 
-N_TOTAL = 2450  # ~57% land inside A, i.e. ~1400 accepted draws
+N_TOTAL = 3100  # ~57% land inside A, i.e. ~1800 accepted draws
 
 
 def gauss_pdf(x, mu, sig_inv, log_norm):
@@ -101,8 +101,8 @@ def main(outdir="."):
                                ((1, 2), "x", LO[0])):
         gi, gj, dens = wall_marginal(pair)
         GI, GJ = np.meshgrid(gi, gj, indexing="ij")
-        kw = dict(levels=11, cmap=pale, alpha=0.55, zorder=1,
-                  vmax=1.35 * dens.max())
+        kw = dict(levels=11, cmap=pale, alpha=0.75, zorder=1,
+                  vmax=1.1 * dens.max())
         (i, j) = pair
         # Dashed frame: the box footprint projected onto the pane.
         fi = [A[i], B[i], B[i], A[i], A[i]]
@@ -128,7 +128,7 @@ def main(outdir="."):
     ylorrd = matplotlib.colors.ListedColormap(
         plt.get_cmap("YlOrRd")(np.linspace(0.3, 1.0, 256)))
     ax.scatter(x[inside, 0], x[inside, 1], x[inside, 2],
-               c=pdf_in, cmap=ylorrd, s=6, alpha=0.85,
+               c=pdf_in, cmap=ylorrd, s=4.2, alpha=0.85,
                linewidths=0, zorder=10)
 
     box_wireframe(ax)
