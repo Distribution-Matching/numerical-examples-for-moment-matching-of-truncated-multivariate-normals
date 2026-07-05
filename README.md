@@ -17,6 +17,8 @@ experiments/gradient_table.jl    # paper Table 2: closed-form gradient vs AD vs 
                                  #   n = 1, …, 7
 experiments/fit_table.jl         # paper Tables 3–5: gradient-source comparison,
                                  #   warm-start ablation, hybrid BCD, n = 2, …, 10
+experiments/intro_figure.py      # paper Figure 1: the introduction's worked n = 3
+                                 #   example (dots + wall marginals; needs matplotlib)
 experiments/results/             # captured benchmark outputs, dated
 ```
 
