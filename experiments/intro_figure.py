@@ -26,11 +26,11 @@ import matplotlib.pyplot as plt  # noqa: E402
 rng = np.random.default_rng(7)
 
 # Fitted parameters (see paper introduction).
-MU = np.array([0.4927, 0.0018, -0.3162])
+MU = np.array([0.4920, 0.0016, -0.3163])
 SIGMA = np.array([
-    [1.0005, 0.4855, 0.3190],
-    [0.4855, 0.9797, 0.1924],
-    [0.3190, 0.1924, 1.0481],
+    [1.1240, 0.5271, 0.3462],
+    [0.5271, 0.9959, 0.2030],
+    [0.3462, 0.2030, 1.0549],
 ])
 A = np.array([-1.0, -2.0, -1.5])
 B = np.array([2.0, 1.0, 1.0])
