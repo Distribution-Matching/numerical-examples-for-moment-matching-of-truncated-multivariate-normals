@@ -52,6 +52,7 @@ BLAS.set_num_threads(1)
 const FTARGET   = 1e-3
 const MAX_ITERS = 50
 const TIME_CAP  = 60.0
+const BCD_SEED  = 20260706   # seed for the softmax block-selection draws
 const COMMON_OPTS = Optim.Options(show_trace = false,
                                   iterations = MAX_ITERS,
                                   time_limit = TIME_CAP,
@@ -225,16 +226,20 @@ function warmstart_p0(a, b, μ̂, Σ̂)
 end
 
 # Hybrid BCD through the public front door, settings per the paper.
+# Softmax selection throughout (greedy is its T -> 0 limit); full-loss
+# acceptance while a full-dimension call is affordable (n <= 5), marginal
+# acceptance beyond, with the joint polish at n = 6. The softmax draws are
+# seeded per row so the reported table is reproducible.
 function fit_bcd(row::PanelRow, a, b, μ̂, Σ̂)
     n = row.n
-    selection = n <= 5 ? :greedy : :softmax
-    accept_by = n <= 5 ? :full   : :marginal
+    accept_by = n <= 5 ? :full : :marginal
     polish    = n == 6
+    Random.seed!(BCD_SEED)
     t = @elapsed begin
         _, _, info = fit_mvnormal(μ̂, Σ̂, a, b;
                                   method = :bcd,
                                   ftarget = FTARGET,
-                                  bcd_selection = selection,
+                                  bcd_selection = :softmax,
                                   bcd_accept_by = accept_by,
                                   bcd_polish = polish,
                                   verbose = false)
