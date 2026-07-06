@@ -15,9 +15,11 @@ Reproducibility scripts for the numerical examples in the paper
 experiments/moment_table.jl      # paper Table 1: Kan–Robotti vs direct cubature
 experiments/gradient_table.jl    # paper Table 2: closed-form gradient vs AD vs FD,
                                  #   n = 1, …, 7
-experiments/bcd_trace.jl         # paper Table 3: a worked hybrid-BCD run
-                                 #   (subset path + accept/reject decisions)
-experiments/fit_table.jl         # paper Tables 4–6: gradient-source comparison,
+experiments/bcd_trace.jl         # paper Figure 2 (data): a worked hybrid-BCD
+                                 #   run at n = 6 (subset path, accept/reject, loss)
+experiments/bcd_trace_plot.py    # paper Figure 2 (plot): the loss curve with
+                                 #   sub-blocks S labelled along it (needs matplotlib)
+experiments/fit_table.jl         # paper Tables 3–5: gradient-source comparison,
                                  #   warm-start ablation, hybrid BCD, n = 2, …, 10
 experiments/intro_figure.py      # paper Figure 1: the introduction's worked n = 3
                                  #   example (dots + wall marginals; needs matplotlib)
