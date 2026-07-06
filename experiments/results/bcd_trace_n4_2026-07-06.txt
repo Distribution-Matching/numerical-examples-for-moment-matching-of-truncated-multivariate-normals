@@ -1,0 +1,36 @@
+==================================================================
+BCD trace  ---  n=4, example 1  (accept_by=full)
+==================================================================
+iter  k   block S        score        decision
+------------------------------------------------------------------
+1     3   {2,3,4}        4.329e-08    accept
+2     2   {1,3}          3.405e-11    reject
+3     2   {1,4}          4.475e-03    accept
+4     2   {3,4}          1.037e-03    reject
+5     1   {2}            6.107e-08    reject
+6     1   {4}            2.592e-03    reject
+7     3   {1,3,4}        1.540e-04    accept
+8     3   {2,3,4}        8.812e-04    reject
+9     2   {3,4}          1.586e-03    reject
+10    1   {1}            3.316e-06    reject
+11    3   {1,2,3}        2.470e-03    accept
+12    3   {1,2,4}        5.783e-04    accept
+------------------------------------------------------------------
+iterations=12  accepts=5  rejects=7
+accepted block sizes: k=1:0  k=2:1  k=3:4
+updates per coordinate: [4, 3, 3, 4]
+final loss (info.loss) = 4.669e-04
+
+LaTeX rows (iter & S & k & score & decision):
+1 & $\{2,3,4\}$ & 3 & $4.3\mathrm{e}\text{-}8$ & \checkmark \\
+2 & $\{1,3\}$ & 2 & $3.4\mathrm{e}\text{-}11$ & $\times$ \\
+3 & $\{1,4\}$ & 2 & $4.5\mathrm{e}\text{-}3$ & \checkmark \\
+4 & $\{3,4\}$ & 2 & $1.0\mathrm{e}\text{-}3$ & $\times$ \\
+5 & $\{2\}$ & 1 & $6.1\mathrm{e}\text{-}8$ & $\times$ \\
+6 & $\{4\}$ & 1 & $2.6\mathrm{e}\text{-}3$ & $\times$ \\
+7 & $\{1,3,4\}$ & 3 & $1.5\mathrm{e}\text{-}4$ & \checkmark \\
+8 & $\{2,3,4\}$ & 3 & $8.8\mathrm{e}\text{-}4$ & $\times$ \\
+9 & $\{3,4\}$ & 2 & $1.6\mathrm{e}\text{-}3$ & $\times$ \\
+10 & $\{1\}$ & 1 & $3.3\mathrm{e}\text{-}6$ & $\times$ \\
+11 & $\{1,2,3\}$ & 3 & $2.5\mathrm{e}\text{-}3$ & \checkmark \\
+12 & $\{1,2,4\}$ & 3 & $5.8\mathrm{e}\text{-}4$ & \checkmark \\
