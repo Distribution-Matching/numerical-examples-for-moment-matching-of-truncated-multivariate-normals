@@ -52,7 +52,12 @@ BLAS.set_num_threads(1)
 const FTARGET   = 1e-3
 const MAX_ITERS = 50
 const TIME_CAP  = 60.0
-const BCD_SEED  = 20260706   # seed for the softmax block-selection draws
+const BCD_SEED  = 20260706   # seed for the QMC base case + softmax draws
+# Benchmark weight: γ = 1 balances the mean- and covariance-residual
+# blocks, so the tables demonstrate joint matching of both moments. (The
+# package's released default is γ = 0.2, which prioritises the mean; see
+# the paper's Section 2.)
+const GAMMA     = 1.0        # covariance weight in L = L1 + γ·r(n)·L2
 const COMMON_OPTS = Optim.Options(show_trace = false,
                                   iterations = MAX_ITERS,
                                   time_limit = TIME_CAP,
@@ -178,13 +183,21 @@ function vector_moment_loss_hcub(p::AbstractVector{T}, a, b,
           for i in 1:n, j in 1:n]
     μA = m1 ./ m0
     ΣA = m2 ./ m0 .- μA * μA'
-    return T(0.5) * (sum(abs2, μA .- μ̂) + sum(abs2, ΣA .- Σ̂))
+    # Match the package's gamma-weighted loss L = L1 + gamma*r(n)*L2 with
+    # r(n) = 2/(n+1), so the FD/AD variants optimise the same objective as
+    # the closed-form path (fair gradient-source comparison).
+    w2 = get_loss_gamma() * 2 / (n + 1)
+    return T(0.5) * (sum(abs2, μA .- μ̂) + w2 * sum(abs2, ΣA .- Σ̂))
 end
 
 # ----------------------------------------------------------------------
 # The five fitting variants. Each takes a packed p0 and returns
 # (final loss, wall seconds, converged-to-target flag).
 # ----------------------------------------------------------------------
+
+# Seed the randomised (Genz–Bretz QMC) base case so each measured fit is
+# reproducible; the FD/AD (hcubature) methods are deterministic anyway.
+reseed_base!() = set_kr_base_rng!(MersenneTwister(BCD_SEED))
 
 function fit_fd(p0, a, b, μ̂, Σ̂)
     f(p) = vector_moment_loss_hcub(p, a, b, μ̂, Σ̂)
@@ -201,6 +214,7 @@ end
 
 function fit_explicit(p0, a, b, μ̂, Σ̂)
     set_kr_base_backend!(:mvnormalcdf)
+    reseed_base!()
     fg!(F, G, p) = vector_fg_true_loss(F, G, p, a, b, μ̂, Matrix(Σ̂))
     t = @elapsed res = optimize(only_fg!(fg!), p0, LBFGS(), COMMON_OPTS)
     return res.minimum, t
@@ -208,6 +222,7 @@ end
 
 function fit_newuoa(p0, a, b, μ̂, Σ̂)
     set_kr_base_backend!(:mvnormalcdf)
+    reseed_base!()
     f(p) = vector_moment_loss(p, a, b, μ̂, Matrix(Σ̂))
     t = @elapsed begin
         p_final, _ = newuoa(f, p0; ftarget = FTARGET, maxfun = 5000)
@@ -234,14 +249,15 @@ function fit_bcd(row::PanelRow, a, b, μ̂, Σ̂)
     n = row.n
     accept_by = n <= 5 ? :full : :marginal
     polish    = n == 6
-    Random.seed!(BCD_SEED)
     t = @elapsed begin
         _, _, info = fit_mvnormal(μ̂, Σ̂, a, b;
                                   method = :bcd,
                                   ftarget = FTARGET,
+                                  gamma = GAMMA,
                                   bcd_selection = :softmax,
                                   bcd_accept_by = accept_by,
                                   bcd_polish = polish,
+                                  seed = BCD_SEED,
                                   verbose = false)
     end
     # info.loss: full loss with :full acceptance (n ≤ 5) and whenever the
@@ -380,7 +396,9 @@ end
 
 function main()
     which = isempty(ARGS) ? ["A", "B", "C"] : ARGS
+    set_loss_gamma!(GAMMA)   # covariance weight; all methods share it
     println("Panel targets: KR moments (n ≤ 6) / rejection sampling (n ≥ 7), rounded to 1 decimal.")
+    println("Loss L = L1 + γ·(2/(n+1))·L2 with γ = $(GAMMA); base case seeded ($(BCD_SEED)).")
     println("Caps: $(MAX_ITERS) iterations, $(TIME_CAP) s, target L < $(FTARGET).")
     @info "warmup (JIT)..."
     warmup()

@@ -75,19 +75,25 @@ function main(n::Int, idx::Int)
     accept_by = n <= 5 ? :full : :marginal
     polish    = n == 6
 
-    Random.seed!(SEED)
+    # γ = 1 (balanced) to match the paper's benchmark tables; the
+    # released package default is γ = 0.2.
     _, _, info = fit_mvnormal(μ̂, Σ̂, a, b;
                               method = :bcd, ftarget = 1e-3,
+                              gamma = 1.0,
                               bcd_selection = :softmax,
                               bcd_accept_by = accept_by,
                               bcd_polish = polish,
+                              seed = SEED,
                               verbose = false)
 
     picks = info.picks
+    # info.hist = [L0, L_after_1, ...]; with :full acceptance it is the
+    # full n-dim loss, so hist[t+1] is the total loss after picks[t].
+    hist = info.hist
     n_acc = count(p -> p[3], picks)
     n_rej = length(picks) - n_acc
     ksizes = [p[1] for p in picks if p[3]]           # accepted block sizes
-    hist = Dict(k => count(==(k), ksizes) for k in 1:3)
+    blk_hist = Dict(k => count(==(k), ksizes) for k in 1:3)
     touched = zeros(Int, n)
     for p in picks
         p[3] || continue
@@ -98,27 +104,33 @@ function main(n::Int, idx::Int)
     @printf("BCD trace  ---  n=%d, example %d  (accept_by=%s%s)\n",
             n, idx, accept_by, polish ? ", polish" : "")
     println("="^66)
-    @printf("%-5s %-3s %-14s %-12s %s\n", "iter", "k", "block S", "score", "decision")
-    println("-"^66)
+    hasL = length(hist) == length(picks) + 1
+    @printf("L0 = %.3e\n", hist[1])
+    @printf("%-5s %-3s %-14s %-12s %-9s %s\n",
+            "iter", "k", "block S", "score", "decision", "L (full)")
+    println("-"^70)
     for (t, p) in enumerate(picks)
         (k, S, acc, sc) = p
-        @printf("%-5d %-3d %-14s %-12.3e %s\n",
-                t, k, Splain(S), sc, acc ? "accept" : "reject")
+        Lstr = hasL ? @sprintf("%.3e", hist[t+1]) : "--"
+        @printf("%-5d %-3d %-14s %-12.3e %-9s %s\n",
+                t, k, Splain(S), sc, acc ? "accept" : "reject", Lstr)
     end
-    println("-"^66)
+    println("-"^70)
     @printf("iterations=%d  accepts=%d  rejects=%d\n", length(picks), n_acc, n_rej)
-    @printf("accepted block sizes: k=1:%d  k=2:%d  k=3:%d\n", hist[1], hist[2], hist[3])
+    @printf("accepted block sizes: k=1:%d  k=2:%d  k=3:%d\n", blk_hist[1], blk_hist[2], blk_hist[3])
     @printf("updates per coordinate: %s\n", string(touched))
     @printf("final loss (info.loss) = %.3e\n", info.loss)
 
-    println("\nLaTeX rows (iter & S & k & score & decision):")
+    sci(x) = (e = floor(Int, log10(abs(x))); m = x / 10.0^e;
+              @sprintf("%.1f\\mathrm{e}\\text{-}%d", m, -e))
+
+    println("\nLaTeX rows (iter & S & k & score & decision & L):")
     for (t, p) in enumerate(picks)
         (k, S, acc, sc) = p
-        e = floor(Int, log10(sc))
-        mant = sc / 10.0^e
         dec = acc ? "\\checkmark" : "\$\\times\$"
-        @printf("%d & \$%s\$ & %d & \$%.1f\\mathrm{e}\\text{-}%d\$ & %s \\\\\n",
-                t, Sstr(S), k, mant, -e, dec)
+        Lcell = hasL ? "\$" * sci(hist[t+1]) * "\$" : "--"
+        @printf("%d & \$%s\$ & %d & \$%s\$ & %s & %s \\\\\n",
+                t, Sstr(S), k, sci(sc), dec, Lcell)
     end
 end
 
