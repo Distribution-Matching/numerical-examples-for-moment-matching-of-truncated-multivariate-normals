@@ -4,6 +4,7 @@ authors = ["Ivana Carrizo Molina", "Yoni Nazarathy"]
 [deps]
 ADTypes = "47edcb42-4c32-4615-8424-f2b9edc5f35b"
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 HCubature = "19dc6840-f33b-545b-b366-655c7e3ffd49"
@@ -16,8 +17,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 TruncatedDistributions = "77af390e-3af4-4cd8-bbfa-7ab7569c172d"
 
 [sources]
-# Pinned to the branch carrying the 0.4.0 release (gamma loss weight,
-# seeded base case, mc_moments). Switch to the registered version
-# (drop this [sources] entry, add a [compat] bound) once 0.4.0 is in the
-# General registry.
-TruncatedDistributions = {url = "https://github.com/Distribution-Matching/TruncatedDistributions.jl", rev = "raw-moment-order-guard"}
+# Pinned to the master commit carrying the 0.5.0 release (truncated
+# multivariate t, fit_mvt). Switch to the registered version (drop this
+# [sources] entry, add a [compat] bound) once 0.5.0 is in the General registry.
+TruncatedDistributions = {url = "https://github.com/Distribution-Matching/TruncatedDistributions.jl", rev = "1063cfc54478a0c379072c751599559c67236a22"}
