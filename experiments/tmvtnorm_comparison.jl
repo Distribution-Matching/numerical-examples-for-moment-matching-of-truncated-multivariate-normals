@@ -106,8 +106,10 @@ function main()
         println("Running tmvtnorm (R) on the panel, N = $NSAMP ...")
         run(`Rscript $(joinpath(@__DIR__, "tmvtnorm_fit.R")) $OUTDIR $NSAMP`)
     end
-    rfits = readdlm(joinpath(OUTDIR, "r_fits.csv"), ',', String; header = true)[1]
+    rdata, rhdr = readdlm(joinpath(OUTDIR, "r_fits.csv"), ',', String; header = true)
     unq(s) = strip(s, '"')
+    col = Dict(unq(h) => k for (k, h) in enumerate(vec(rhdr)))
+    rfits = rdata
 
     set_kr_base_backend!(:mvnormalcdf)
     # JIT warm-up so the timings below are post-compilation.
@@ -130,13 +132,13 @@ function main()
 
         results = Tuple{String,Float64,Float64,Float64}[]
         for r in eachrow(rfits)
-            unq(r[1]) == id || continue
-            method = unq(r[2]) == "mle" ? "mle.tmvnorm" : "gmm.tmvnorm"
-            t = parse(Float64, unq(r[3]))
-            if startswith(unq(r[4]), "error")
+            unq(r[col["id"]]) == id || continue
+            method = unq(r[col["method"]]) == "mle" ? "mle.tmvnorm" : "gmm.tmvnorm"
+            t = parse(Float64, unq(r[col["time"]]))
+            if startswith(unq(r[col["status"]]), "error")
                 push!(results, (method, t, NaN, NaN)); continue
             end
-            μr, Σr = parse_r_coef(unq(r[5]), unq(r[6]), n)
+            μr, Σr = parse_r_coef(unq(r[col["names"]]), unq(r[col["coef"]]), n)
             push!(results, (method, t, solver_error(μr, Σr, a, b, x̄, S)...))
         end
         t = @elapsed μf, Σf, info = fit_mvnormal(x̄, S, a, b; method = :lbfgs,

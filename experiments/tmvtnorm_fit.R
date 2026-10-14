@@ -42,10 +42,15 @@ for (r in seq_len(nrow(panel))) {
         else gmm.tmvnorm(X, lo, up, start = start),
         error = function(e) { status <<- paste("error:", conditionMessage(e)); NULL })
     })[["elapsed"]]
-    if (!is.null(fit)) { est <- as.numeric(coef(fit)); nm <- names(coef(fit)) }
-    cat(sprintf("%-5s %-4s %8.2fs  %s\n", id, method, t, status))
+    conv <- NA
+    if (!is.null(fit)) {
+      est <- as.numeric(coef(fit)); nm <- names(coef(fit))
+      # optim convergence code (0 = success) for mle; gmm's algoInfo code
+      conv <- if (method == "mle") fit@details$convergence else fit$algoInfo$convergence
+    }
+    cat(sprintf("%-5s %-4s %8.2fs  %s  convergence=%s\n", id, method, t, status, conv))
     rows[[length(rows) + 1]] <- data.frame(id = id, method = method, time = t,
-      status = status, names = paste(nm, collapse = ";"),
+      status = status, convergence = conv, names = paste(nm, collapse = ";"),
       coef = paste(format(est, digits = 17), collapse = ";"))
   }
 }

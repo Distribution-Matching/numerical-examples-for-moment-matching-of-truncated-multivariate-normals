@@ -17,4 +17,3 @@ ex.   estimate              loglik   max|dmu|    max|dS|
 5.1   fit_mvnormal     -12208.8572    1.7e-05    2.5e-05
 5.2   mle.tmvnorm      -10315.3099    1.4e-02    4.6e-02
 5.2   fit_mvnormal     -10303.0780    3.6e-05    2.7e-05
-
