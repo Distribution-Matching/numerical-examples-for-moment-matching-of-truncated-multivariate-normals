@@ -44,7 +44,7 @@ BLAS.set_num_threads(1)
 # ----------------------------------------------------------------------
 
 struct Config
-    name::String                    # short label, e.g. "2A"
+    name::String                    # short label, e.g. "2.1"
     n::Int                          # dimension
     descr::String                   # human-readable description
     μ::Vector{Float64}
@@ -70,16 +70,16 @@ end
 
 const CONFIGS = [
     # --- KR vs hcubature on the full moment table (n = 2, 3) ---
-    bundled_config("2A", 2, 1, "bundled n=2 ex 1: off-centre, mild correlation"),
-    bundled_config("2B", 2, 4, "bundled n=2 ex 4: centred, mildly correlated, tight box"),
-    bundled_config("3A", 3, 1, "bundled n=3 ex 1: off-centre, finite asymmetric box"),
-    bundled_config("3G", 3, 3, "Genz–Bretz Phi3ex (G&B 2009 §1.3.1): centred, semi-infinite"),
+    bundled_config("2.1", 2, 1, "bundled n=2 ex 1: off-centre, mild correlation"),
+    bundled_config("2.4", 2, 4, "bundled n=2 ex 4: centred, mildly correlated, tight box"),
+    bundled_config("3.1", 3, 1, "bundled n=3 ex 1: off-centre, finite asymmetric box"),
+    bundled_config("3.3", 3, 3, "Genz–Bretz Phi3ex (G&B 2009 §1.3.1): centred, semi-infinite"),
     # --- Single complicated 4th-order moment at n = 4 ---
     # Direct hcubature on all 70 moments is too slow at the reference
     # tolerance; the joint cross-moment κ = (1,1,1,1) is enough to
     # show that even one 4D quartic-Gaussian integral is slower than
     # the KR pipeline computing the whole 70-moment table.
-    bundled_config("4A", 4, 1,
+    bundled_config("4.1", 4, 1,
                    "bundled n=4 ex 1: single κ = (1,1,1,1)";
                    single_κ = [1, 1, 1, 1]),
     # The former KR-only scalability sweep (n = 5, 6, 7) has moved to

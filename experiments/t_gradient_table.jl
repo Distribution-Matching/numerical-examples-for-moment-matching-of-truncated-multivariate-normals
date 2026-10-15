@@ -50,11 +50,11 @@ bundled(name, n, idx) = (ex = get_example(n = n, index = idx);
 univ(name, μ, σ, a, b) = Cfg(name, [μ], fill(σ^2, 1, 1), [a], [b])
 
 const CONFIGS = [
-    univ("1A", 0.0, 1.0, -1.0, 1.0),
-    univ("1B", 0.5, 1.5, -1.0, 2.0),
-    bundled("2A", 2, 1), bundled("2B", 2, 4),
-    bundled("3A", 3, 1),
-    bundled("4A", 4, 1), bundled("5A", 5, 1), bundled("6A", 6, 1),
+    univ("1.1", 0.0, 1.0, -1.0, 1.0),
+    univ("1.2", 0.5, 1.5, -1.0, 2.0),
+    bundled("2.1", 2, 1), bundled("2.4", 2, 4),
+    bundled("3.1", 3, 1),
+    bundled("4.1", 4, 1), bundled("5.1", 5, 1), bundled("6.1", 6, 1),
 ]
 
 function eval_point(c::Cfg; pert = 0.05)

@@ -50,9 +50,9 @@ bundled(name, n, idx; single_κ = nothing) = (ex = get_example(n = n, index = id
         collect(Float64, ex.b), single_κ))
 
 const CONFIGS = [
-    bundled("2A", 2, 1), bundled("2B", 2, 4),
-    bundled("3A", 3, 1), bundled("3G", 3, 3),
-    bundled("4A", 4, 1; single_κ = [1, 1, 1, 1]),
+    bundled("2.1", 2, 1), bundled("2.4", 2, 4),
+    bundled("3.1", 3, 1), bundled("3.3", 3, 3),
+    bundled("4.1", 4, 1; single_κ = [1, 1, 1, 1]),
 ]
 
 function multiindices(n, L)

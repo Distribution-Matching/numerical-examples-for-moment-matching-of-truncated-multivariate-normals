@@ -181,24 +181,24 @@ end
 
 const CONFIGS = [
     # n = 1
-    univariate_config("1A", "n=1: μ=0, σ=1, A=[-1, 1]",
+    univariate_config("1.1", "n=1: μ=0, σ=1, A=[-1, 1]",
                       0.0, 1.0, -1.0, 1.0),
-    univariate_config("1B", "n=1: μ=0.5, σ=1.5, A=[-1, 2]",
+    univariate_config("1.2", "n=1: μ=0.5, σ=1.5, A=[-1, 2]",
                       0.5, 1.5, -1.0, 2.0),
     # n = 2: two bundled examples
-    bundled_grad_config("2A", 2, 1, "bundled n=2 ex 1"),
-    bundled_grad_config("2B", 2, 4, "bundled n=2 ex 4"),
+    bundled_grad_config("2.1", 2, 1, "bundled n=2 ex 1"),
+    bundled_grad_config("2.4", 2, 4, "bundled n=2 ex 4"),
     # n = 3: bundled
-    bundled_grad_config("3A", 3, 1, "bundled n=3 ex 1"),
+    bundled_grad_config("3.1", 3, 1, "bundled n=3 ex 1"),
     # n = 4, ..., 7: closed-form only. AD and FD drive generic
     # adaptive cubature whose cost is exponential in n; a single FD
     # gradient at n = 4 already exceeds the 60 s cap used in §6.
-    bundled_grad_config("4A", 4, 1, "bundled n=4 ex 1"),
-    bundled_grad_config("5A", 5, 1, "bundled n=5 ex 1"),
-    bundled_grad_config("6A", 6, 1, "bundled n=6 ex 1"),
-    bundled_grad_config("7A", 7, 1, "bundled n=7 ex 1"),
-    bundled_grad_config("8A", 8, 1, "bundled n=8 ex 1"),
-    bundled_grad_config("10A", 10, 1, "bundled n=10 ex 1"),
+    bundled_grad_config("4.1", 4, 1, "bundled n=4 ex 1"),
+    bundled_grad_config("5.1", 5, 1, "bundled n=5 ex 1"),
+    bundled_grad_config("6.1", 6, 1, "bundled n=6 ex 1"),
+    bundled_grad_config("7.1", 7, 1, "bundled n=7 ex 1"),
+    bundled_grad_config("8.1", 8, 1, "bundled n=8 ex 1"),
+    bundled_grad_config("10.1", 10, 1, "bundled n=10 ex 1"),
 ]
 
 # AD / FD are only benchmarked at n ≤ AD_FD_MAX_N.
