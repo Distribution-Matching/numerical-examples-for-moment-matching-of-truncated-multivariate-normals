@@ -52,7 +52,8 @@ const NUS = (4.0, 10.0)
 const PANEL = [("2.1", 2, 1, "box"), ("2.2", 2, 2, "box"),
                ("2.3", 2, 3, "M.W. semi-inf."), ("2.4", 2, 4, "box"),
                ("3.1", 3, 1, "cube"), ("3.2", 3, 2, "semi-inf."),
-               ("4.1", 4, 1, "box")]
+               ("4.1", 4, 1, "box"), ("5.1", 5, 1, "[-2,2]^5"),
+               ("5.2", 5, 2, "[-1.5,1.5]^5")]
 const OPTS = Optim.Options(show_trace = false, iterations = MAX_ITERS,
                            time_limit = TIME_CAP, callback = s -> s.f_x < FTARGET)
 
@@ -61,7 +62,9 @@ reseed!() = set_kr_base_rng!(MersenneTwister(SEED))
 function targets(ν, n, idx)
     ex = get_example(n = n, index = idx)
     a = collect(Float64, ex.a); b = collect(Float64, ex.b)
-    set_kr_base_backend!(:hcubature)
+    # cubature base case up to n = 4; seeded QMC at n = 5, where cubature
+    # is too slow (the targets are rounded to one decimal either way)
+    set_kr_base_backend!(n <= 4 ? :hcubature : :mvnormalcdf); reseed!()
     d = TruncatedMvT(ν, collect(Float64, ex.μ), Matrix{Float64}(ex.Σ), a, b;
                      max_moment_levels = 2)
     μ̂ = round.(mean(d); digits = 1)

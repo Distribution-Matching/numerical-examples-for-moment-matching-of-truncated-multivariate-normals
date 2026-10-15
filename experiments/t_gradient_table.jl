@@ -54,7 +54,7 @@ const CONFIGS = [
     univ("1B", 0.5, 1.5, -1.0, 2.0),
     bundled("2A", 2, 1), bundled("2B", 2, 4),
     bundled("3A", 3, 1),
-    bundled("4A", 4, 1), bundled("5A", 5, 1),
+    bundled("4A", 4, 1), bundled("5A", 5, 1), bundled("6A", 6, 1),
 ]
 
 function eval_point(c::Cfg; pert = 0.05)

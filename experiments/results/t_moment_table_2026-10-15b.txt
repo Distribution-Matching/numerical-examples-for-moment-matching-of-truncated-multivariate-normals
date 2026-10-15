@@ -1,0 +1,13 @@
+Cfg   n    M    recursion    rel.err     cubature    rel.err  speedup
+2A    2   15    1.795e-02    4.5e-10    1.353e-02    2.4e-07        1
+2B    2   15    5.358e-03    7.0e-11    8.690e-03    3.0e-09        2
+3A    3   35    1.189e-01    7.5e-07    7.753e-01    6.2e-08        7
+3G    3   35    3.693e-01    3.7e-06    1.345e+01    5.3e-08       36
+4A    4    1    4.910e-01    3.0e-06    2.114e+00    2.6e-09        4
+
+LaTeX rows:
+2A & 2 &  15 & $17.9$\,ms & $4.5\mathrm{e}\text{-}10$ && $13.5$\,ms & $2.4\mathrm{e}\text{-}7$ & $1\times$ \\
+2B & 2 &  15 & $5.4$\,ms & $7.0\mathrm{e}\text{-}11$ && $8.7$\,ms & $3.0\mathrm{e}\text{-}9$ & $2\times$ \\
+3A & 3 &  35 & $118.9$\,ms & $7.5\mathrm{e}\text{-}7$ && $775.3$\,ms & $6.2\mathrm{e}\text{-}8$ & $7\times$ \\
+3G & 3 &  35 & $369.3$\,ms & $3.7\mathrm{e}\text{-}6$ && $13.45$\,s & $5.3\mathrm{e}\text{-}8$ & $36\times$ \\
+4A & 4 &   1 & $491.0$\,ms & $3.0\mathrm{e}\text{-}6$ && $2.11$\,s & $2.6\mathrm{e}\text{-}9$ & $4\times$ \\

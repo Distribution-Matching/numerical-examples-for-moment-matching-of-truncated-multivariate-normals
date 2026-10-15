@@ -28,7 +28,8 @@ BLAS.set_num_threads(1)
 const OUTDIR = joinpath(@__DIR__, "results", "tmvtnorm_adapter")
 const PANEL = [("2.1", 2, 1), ("2.2", 2, 2), ("2.3", 2, 3), ("2.4", 2, 4),
                ("3.1", 3, 1), ("3.2", 3, 2), ("4.1", 4, 1),
-               ("5.1", 5, 1), ("5.2", 5, 2)]
+               ("5.1", 5, 1), ("5.2", 5, 2), ("6.1", 6, 1), ("6.2", 6, 2),
+               ("7.1", 7, 1), ("7.2", 7, 2), ("8.1", 8, 1), ("8.2", 8, 2)]
 
 joinnum(v) = join((isinf(x) ? (x > 0 ? "Inf" : "-Inf") : repr(x) for x in v), ";")
 
@@ -36,14 +37,21 @@ joinnum(v) = join((isinf(x) ? (x > 0 ? "Inf" : "-Inf") : repr(x) for x in v), ";
 function targets(n, idx)
     ex = get_example(n = n, index = idx)
     set_kr_base_backend!(:mvnormalcdf)
-    d = dist_from_example(ex)
-    μ̂ = round.(collect(mean(d)); digits = 1)
-    Σ̂ = round.(Matrix(cov(d)); digits = 1)
-    return μ̂, Σ̂, collect(Float64, ex.a), collect(Float64, ex.b)
+    set_kr_base_rng!(TruncatedDistributions.Random.MersenneTwister(20260706))
+    a = collect(Float64, ex.a); b = collect(Float64, ex.b)
+    d = RecursiveMomentsBoxTruncatedMvNormal(collect(Float64, ex.μ),
+            TruncatedDistributions.PDMat(Matrix{Float64}(ex.Σ)), a, b; max_moment_levels = 2)
+    m0 = raw_moment_from_indices(d, Int[])
+    m1 = [raw_moment_from_indices(d, [i]) for i in 1:n] ./ m0
+    m2 = [raw_moment_from_indices(d, [i, j]) for i in 1:n, j in 1:n] ./ m0
+    return round.(m1; digits = 1), round.(m2 .- m1 * m1'; digits = 1), a, b
 end
 
+# Common evaluator: cubature base case up to n = 4; Genz–Bretz QMC (seeded)
+# beyond, where cubature in the base case is too slow.
 function moments_accurate(μ, Σ, a, b)
-    prev = set_kr_base_backend!(:hcubature)
+    prev = set_kr_base_backend!(length(μ) <= 4 ? :hcubature : :mvnormalcdf)
+    set_kr_base_rng!(TruncatedDistributions.Random.MersenneTwister(1))
     try
         Σs = 0.5 .* (Σ .+ Σ')
         d = RecursiveMomentsBoxTruncatedMvNormal(μ, TruncatedDistributions.PDMat(Σs), a, b;

@@ -1,0 +1,50 @@
+
+================================================================================
+Moment-table benchmark for the section 4 / tab:kr-bench
+================================================================================
+[ Info: ----- 2A: bundled n=2 ex 1: off-centre, mild correlation -----
+[ Info: config 2A (n = 2, M = 15): computing tight-tolerance reference...
+[ Info: config 2A: reference ready in 0.79 s
+[ Info: config 2A: timing KR + Genz–Bretz QMC...
+[ Info: config 2A: timing direct hcubature...
+[ Info: config 2A: DONE  KR 556\,\textmu s (7.2e-10)  HC 11.6\,ms (2.8e-08)  speedup 21\times
+[ Info: ----- 2B: bundled n=2 ex 4: centred, mildly correlated, tight box -----
+[ Info: config 2B (n = 2, M = 15): computing tight-tolerance reference...
+[ Info: config 2B: reference ready in 0.03 s
+[ Info: config 2B: timing KR + Genz–Bretz QMC...
+[ Info: config 2B: timing direct hcubature...
+[ Info: config 2B: DONE  KR 485\,\textmu s (1.0e-04)  HC 5.6\,ms (1.3e-09)  speedup 12\times
+[ Info: ----- 3A: bundled n=3 ex 1: off-centre, finite asymmetric box -----
+[ Info: config 3A (n = 3, M = 35): computing tight-tolerance reference...
+[ Info: config 3A: reference ready in 57.45 s
+[ Info: config 3A: timing KR + Genz–Bretz QMC...
+[ Info: config 3A: timing direct hcubature...
+[ Info: config 3A: DONE  KR 5.2\,ms (5.9e-06)  HC 439.6\,ms (6.7e-08)  speedup 85\times
+[ Info: ----- 3G: Genz–Bretz Phi3ex (G&B 2009 §1.3.1): centred, semi-infinite -----
+[ Info: config 3G (n = 3, M = 35): computing tight-tolerance reference...
+[ Info: config 3G: reference ready in 33.2 s
+[ Info: config 3G: timing KR + Genz–Bretz QMC...
+[ Info: config 3G: timing direct hcubature...
+[ Info: config 3G: DONE  KR 2.7\,ms (1.4e-07)  HC 3.18\,s (2.2e-07)  speedup 1156\times
+[ Info: ----- 4A: bundled n=4 ex 1: single κ = (1,1,1,1) -----
+[ Info: config 4A (n = 4, M = 1): computing tight-tolerance reference...
+[ Info: config 4A: reference ready in 7.7 s
+[ Info: config 4A: timing KR + Genz–Bretz QMC...
+[ Info: config 4A: timing direct hcubature...
+[ Info: config 4A: DONE  KR 19.3\,ms (4.2e-08)  HC 1.10\,s (5.3e-09)  speedup 57\times
+
+Cfg    |   n |    M | KR + Genz–Bretz QMC     | Direct hcubature        | Speedup 
+       |     |      | time (s) / max rel err  | time (s) / max rel err  |         
+-------------------------------------------------------------------------------------
+2A     |   2 |   15 | 5.562e-04 s / 7.16e-10   | 1.159e-02 s / 2.78e-08 |   20.8x
+2B     |   2 |   15 | 4.849e-04 s / 1.05e-04   | 5.585e-03 s / 1.30e-09 |   11.5x
+3A     |   3 |   35 | 5.169e-03 s / 5.87e-06   | 4.396e-01 s / 6.71e-08 |   85.0x
+3G     |   3 |   35 | 2.750e-03 s / 1.40e-07   | 3.180e+00 s / 2.16e-07 | 1156.3x
+4A     |   4 |    1 | 1.934e-02 s / 4.18e-08   | 1.104e+00 s / 5.30e-09 |   57.1x
+
+LaTeX table rows (paste into tab:kr-bench):
+2A & 2 & 15 & 556\,\textmu s & 7.2e-10 & 11.6\,ms & 2.8e-08 & 21\times \\
+2B & 2 & 15 & 485\,\textmu s & 1.0e-04 & 5.6\,ms & 1.3e-09 & 12\times \\
+3A & 3 & 35 & 5.2\,ms & 5.9e-06 & 439.6\,ms & 6.7e-08 & 85\times \\
+3G & 3 & 35 & 2.7\,ms & 1.4e-07 & 3.18\,s & 2.2e-07 & 1156\times \\
+4A & 4 & 1 & 19.3\,ms & 4.2e-08 & 1.10\,s & 5.3e-09 & 57\times \\

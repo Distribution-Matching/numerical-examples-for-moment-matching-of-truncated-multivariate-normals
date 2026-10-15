@@ -79,6 +79,8 @@ for (r in seq_len(nrow(targets))) {
     est <- rep(NA_real_, n + n * (n + 1) / 2); nm <- rep("", length(est))
     status <- "ok"; conv <- NA
     set.seed(2000 + r)
+    # Same 60 s wall-clock cap as every other method in the fit table.
+    setTimeLimit(elapsed = 60, transient = TRUE)
     t <- system.time({
       fit <- tryCatch(
         if (method == "mle") mle.tmvnorm(X, lo, up, start = start)
@@ -88,6 +90,7 @@ for (r in seq_len(nrow(targets))) {
         else gmm.tmvnorm(X, lo, up, start = start, vcov = "iid"),
         error = function(e) { status <<- paste("error:", conditionMessage(e)); NULL })
     })[["elapsed"]]
+    setTimeLimit(elapsed = Inf)
     if (!is.null(fit)) {
       est <- as.numeric(coef(fit)); nm <- names(coef(fit))
       conv <- if (method == "mle") fit@details$convergence else fit$algoInfo$convergence

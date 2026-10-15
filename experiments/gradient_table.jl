@@ -111,7 +111,8 @@ function loss(θ::AbstractVector, n::Int, a::Vector{Float64},
         Σ_A[j, i] = Σ_A[i, j]
     end
     L1 = 0.5 * sum(abs2, μ_A .- μ̂)
-    L2 = 0.5 * sum(abs2, Σ_A .- Σ̂)
+    # covariance weight γ·2/(n+1), as in the package loss
+    L2 = 0.5 * TruncatedDistributions._cov_weight(n) * sum(abs2, Σ_A .- Σ̂)
     return L1 + L2
 end
 
@@ -196,6 +197,8 @@ const CONFIGS = [
     bundled_grad_config("5A", 5, 1, "bundled n=5 ex 1"),
     bundled_grad_config("6A", 6, 1, "bundled n=6 ex 1"),
     bundled_grad_config("7A", 7, 1, "bundled n=7 ex 1"),
+    bundled_grad_config("8A", 8, 1, "bundled n=8 ex 1"),
+    bundled_grad_config("10A", 10, 1, "bundled n=10 ex 1"),
 ]
 
 # AD / FD are only benchmarked at n ≤ AD_FD_MAX_N.

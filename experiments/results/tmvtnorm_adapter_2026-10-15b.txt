@@ -1,0 +1,97 @@
+2.1   mle  N= 4 hadamard              0.06s  ok  convergence=0
+2.1   gmm  N= 4 hadamard              0.33s  ok  convergence=0
+2.2   mle  N= 4 hadamard              0.07s  ok  convergence=0
+2.2   gmm  N= 4 hadamard              0.24s  ok  convergence=0
+2.3   mle  N= 4 hadamard              0.30s  ok  convergence=1
+2.3   gmm  N= 4 hadamard              0.42s  ok  convergence=1
+2.4   mle  N= 4 hadamard              0.07s  ok  convergence=0
+2.4   gmm  N= 4 hadamard              0.23s  ok  convergence=0
+3.1   mle  N= 4 hadamard              0.24s  ok  convergence=0
+3.1   gmm  N= 4 hadamard              2.45s  ok  convergence=1
+3.2   mle  N= 4 hadamard              0.34s  ok  convergence=0
+3.2   gmm  N= 4 hadamard              2.47s  ok  convergence=1
+4.1   mle  N= 8 hadamard              0.80s  ok  convergence=0
+4.1   gmm  N= 8 hadamard              7.70s  ok  convergence=1
+5.1   mle  N= 8 hadamard              3.74s  ok  convergence=0
+5.1   gmm  N= 8 hadamard             25.74s  ok  convergence=1
+5.2   mle  N= 8 hadamard              3.47s  ok  convergence=0
+5.2   gmm  N= 8 hadamard             26.26s  ok  convergence=1
+6.1   mle  N= 8 hadamard             14.99s  ok  convergence=0
+6.1   gmm  N= 8 hadamard             59.95s  error: reached elapsed time limit  convergence=NA
+6.2   mle  N= 8 hadamard             10.95s  ok  convergence=0
+6.2   gmm  N= 8 hadamard             59.98s  error: reached elapsed time limit  convergence=NA
+7.1   mle  N= 8 hadamard             22.12s  ok  convergence=0
+7.1   gmm  N= 8 hadamard             59.96s  error: reached elapsed time limit  convergence=NA
+7.2   mle  N= 8 hadamard             30.75s  ok  convergence=0
+7.2   gmm  N= 8 hadamard             59.95s  error: reached elapsed time limit  convergence=NA
+8.1   mle  N=16 hadamard             56.92s  ok  convergence=0
+8.1   gmm  N=16 hadamard             59.95s  error: reached elapsed time limit  convergence=NA
+8.2   mle  N=16 hadamard             59.95s  error: reached elapsed time limit  convergence=NA
+8.2   gmm  N=16 hadamard             59.97s  error: reached elapsed time limit  convergence=NA
+Warning messages:
+1: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+2: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+3: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+4: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+5: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+6: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+7: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+8: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+9: In FinRes.baseGmm.res(z, Model_info) :
+  The covariance matrix of the moment function is singular
+ex.   method         N design             time (s)     L (γ=1)  conv
+2.1   mle.tmvnorm    4 hadamard               0.06     5.1e-08     0
+2.1   gmm.tmvnorm    4 hadamard               0.33     6.1e-10     0
+2.2   mle.tmvnorm    4 hadamard               0.07     4.0e-07     0
+2.2   gmm.tmvnorm    4 hadamard               0.24     9.1e-09     0
+2.3   mle.tmvnorm    4 hadamard               0.30     1.1e-03     1
+2.3   gmm.tmvnorm    4 hadamard               0.42     3.1e-04     1
+2.4   mle.tmvnorm    4 hadamard               0.07     1.3e-11     0
+2.4   gmm.tmvnorm    4 hadamard               0.23     3.9e-10     0
+3.1   mle.tmvnorm    4 hadamard               0.24     3.5e-01     0
+3.1   gmm.tmvnorm    4 hadamard               2.45     1.0e-04     1
+3.2   mle.tmvnorm    4 hadamard               0.34     5.8e-03     0
+3.2   gmm.tmvnorm    4 hadamard               2.47     2.4e-05     1
+4.1   mle.tmvnorm    8 hadamard               0.80     3.3e-06     0
+4.1   gmm.tmvnorm    8 hadamard               7.70     2.2e-03     1
+5.1   mle.tmvnorm    8 hadamard               3.74     7.5e-04     0
+5.1   gmm.tmvnorm    8 hadamard              25.73     4.7e-03     1
+5.2   mle.tmvnorm    8 hadamard               3.47     3.0e-04     0
+5.2   gmm.tmvnorm    8 hadamard              26.26     3.0e-03     1
+6.1   mle.tmvnorm    8 hadamard              14.99     2.4e-03     0
+6.1   gmm.tmvnorm    8 hadamard                NaN         NaN    NA
+6.2   mle.tmvnorm    8 hadamard              10.95     5.7e-04     0
+6.2   gmm.tmvnorm    8 hadamard                NaN         NaN    NA
+7.1   mle.tmvnorm    8 hadamard              22.12     4.8e-04     0
+7.1   gmm.tmvnorm    8 hadamard                NaN         NaN    NA
+7.2   mle.tmvnorm    8 hadamard              30.75     1.1e-04     0
+7.2   gmm.tmvnorm    8 hadamard                NaN         NaN    NA
+8.1   mle.tmvnorm   16 hadamard              56.92     6.9e-04     0
+8.1   gmm.tmvnorm   16 hadamard                NaN         NaN    NA
+8.2   mle.tmvnorm   16 hadamard                NaN         NaN    NA
+8.2   gmm.tmvnorm   16 hadamard                NaN         NaN    NA
+
+Cells (mle, gmm) per row:
+2.1 & 0.06 / 5.1e-08 & 0.33 / 6.1e-10
+2.2 & 0.07 / 4.0e-07 & 0.24 / 9.1e-09
+2.3 & 0.30 / 1.1e-03 & 0.42 / 3.1e-04
+2.4 & 0.07 / 1.3e-11 & 0.23 / 3.9e-10
+3.1 & 0.24 / 3.5e-01 & 2.45 / 1.0e-04
+3.2 & 0.34 / 5.8e-03 & 2.47 / 2.4e-05
+4.1 & 0.80 / 3.3e-06 & 7.70 / 2.2e-03
+5.1 & 3.74 / 7.5e-04 & 25.73 / 4.7e-03
+5.2 & 3.47 / 3.0e-04 & 26.26 / 3.0e-03
+6.1 & 14.99 / 2.4e-03 & --
+6.2 & 10.95 / 5.7e-04 & --
+7.1 & 22.12 / 4.8e-04 & --
+7.2 & 30.75 / 1.1e-04 & --
+8.1 & 56.92 / 6.9e-04 & --
+8.2 & -- & --

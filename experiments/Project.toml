@@ -17,7 +17,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 TruncatedDistributions = "77af390e-3af4-4cd8-bbfa-7ab7569c172d"
 
 [sources]
-# Pinned to the master commit carrying the 0.5.0 release (truncated
+# Pinned to the master commit carrying the 0.5.0 release (shared recursion states, truncated
 # multivariate t, fit_mvt). Switch to the registered version (drop this
 # [sources] entry, add a [compat] bound) once 0.5.0 is in the General registry.
-TruncatedDistributions = {url = "https://github.com/Distribution-Matching/TruncatedDistributions.jl", rev = "1063cfc54478a0c379072c751599559c67236a22"}
+TruncatedDistributions = {url = "https://github.com/Distribution-Matching/TruncatedDistributions.jl", rev = "eab919fbe0c31a47d4e8173f806d22269e1518f3"}

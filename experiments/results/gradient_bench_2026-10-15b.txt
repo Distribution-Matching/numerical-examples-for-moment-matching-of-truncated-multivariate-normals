@@ -1,0 +1,74 @@
+
+================================================================================
+Gradient benchmark for §4 of the paper
+================================================================================
+[ Info: config 1A (n = 1, P = 2 parameters): n=1: μ=0, σ=1, A=[-1, 1]
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 26\,\textmu s   AD 12\,\textmu s (err 6.1e-15)   FD 31\,\textmu s (err 1.0e-04)
+[ Info: config 1B (n = 1, P = 2 parameters): n=1: μ=0.5, σ=1.5, A=[-1, 2]
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 23\,\textmu s   AD 11\,\textmu s (err 3.3e-15)   FD 31\,\textmu s (err 1.0e-04)
+[ Info: config 2A (n = 2, P = 5 parameters): bundled n=2 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 546\,\textmu s   AD 9.9\,ms (err 1.4e-08)   FD 43.8\,ms (err 4.3e-04)
+[ Info: config 2B (n = 2, P = 5 parameters): bundled n=2 ex 4
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 455\,\textmu s   AD 3.8\,ms (err 1.1e-05)   FD 20.3\,ms (err 1.1e-04)
+[ Info: config 3A (n = 3, P = 9 parameters): bundled n=3 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 5.4\,ms   AD 1.49\,s (err 6.6e-05)   FD 6.76\,s (err 7.4e-04)
+[ Info: config 4A (n = 4, P = 14 parameters): bundled n=4 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 21.6\,ms   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 5A (n = 5, P = 20 parameters): bundled n=5 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 118.6\,ms   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 6A (n = 6, P = 27 parameters): bundled n=6 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 472.6\,ms   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 7A (n = 7, P = 35 parameters): bundled n=7 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 1.42\,s   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 8A (n = 8, P = 44 parameters): bundled n=8 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 3.44\,s   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 10A (n = 10, P = 65 parameters): bundled n=10 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 14.31\,s   AD -- (err NaN)   FD -- (err NaN)
+
+Cfg  |   n |   P | explicit      | ForwardDiff   | FD (h=1e-5)   | AD err / FD err
+------------------------------------------------------------------------------------------
+1A   |   1 |   2 | 26\,\textmu s | 12\,\textmu s | 31\,\textmu s | 6.1e-15 / 1.0e-04
+1B   |   1 |   2 | 23\,\textmu s | 11\,\textmu s | 31\,\textmu s | 3.3e-15 / 1.0e-04
+2A   |   2 |   5 | 546\,\textmu s | 9.9\,ms       | 43.8\,ms      | 1.4e-08 / 4.3e-04
+2B   |   2 |   5 | 455\,\textmu s | 3.8\,ms       | 20.3\,ms      | 1.1e-05 / 1.1e-04
+3A   |   3 |   9 | 5.4\,ms       | 1.49\,s       | 6.76\,s       | 6.6e-05 / 7.4e-04
+4A   |   4 |  14 | 21.6\,ms      | --            | --            | NaN / NaN
+5A   |   5 |  20 | 118.6\,ms     | --            | --            | NaN / NaN
+6A   |   6 |  27 | 472.6\,ms     | --            | --            | NaN / NaN
+7A   |   7 |  35 | 1.42\,s       | --            | --            | NaN / NaN
+8A   |   8 |  44 | 3.44\,s       | --            | --            | NaN / NaN
+10A  |  10 |  65 | 14.31\,s      | --            | --            | NaN / NaN
+
+LaTeX rows (paste into tab:grad-bench):
+1A & 1 & 2 & 26\,\textmu s & 12\,\textmu s & 31\,\textmu s & 6e-15 & 1.0e-04 \\
+1B & 1 & 2 & 23\,\textmu s & 11\,\textmu s & 31\,\textmu s & 3e-15 & 1.0e-04 \\
+2A & 2 & 5 & 546\,\textmu s & 9.9\,ms & 43.8\,ms & 1.4e-08 & 4.3e-04 \\
+2B & 2 & 5 & 455\,\textmu s & 3.8\,ms & 20.3\,ms & 1.1e-05 & 1.1e-04 \\
+3A & 3 & 9 & 5.4\,ms & 1.49\,s & 6.76\,s & 6.6e-05 & 7.4e-04 \\
+4A & 4 & 14 & 21.6\,ms & -- & -- & -- & -- \\
+5A & 5 & 20 & 118.6\,ms & -- & -- & -- & -- \\
+6A & 6 & 27 & 472.6\,ms & -- & -- & -- & -- \\
+7A & 7 & 35 & 1.42\,s & -- & -- & -- & -- \\
+8A & 8 & 44 & 3.44\,s & -- & -- & -- & -- \\
+10A & 10 & 65 & 14.31\,s & -- & -- & -- & -- \\
