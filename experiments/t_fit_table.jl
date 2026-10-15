@@ -9,9 +9,10 @@ truncated-t recursion on an adaptive-cubature base case and rounded to one
 decimal, as in the Gaussian tables. Every method optimises the same loss
 (γ = 1), with the same caps: 50 outer iterations, 60 s, target L < 1e-3.
 
-  LBFGS-FD       L-BFGS with finite-difference gradients on the loss
-                 evaluated by the truncated-t recursion with an adaptive-
-                 cubature base case (smooth, deterministic).
+  LBFGS-FD       L-BFGS with finite-difference gradients on a type-generic
+                 loss built by direct adaptive cubature of the t density
+                 (t_generic_loss.jl, rtol = 1e-5), as for the Gaussian.
+  LBFGS-AD       L-BFGS with ForwardDiff gradients on the same loss.
   NEWUOA         derivative-free (PRIMA) on the loss evaluated by the
                  recursion with the Genz–Bretz QMC base case.
   LBFGS-explicit L-BFGS with the closed-form gradient (t_ν moments of
@@ -23,13 +24,18 @@ a scale matrix.
 
 Run from the repository root:
     OPENBLAS_NUM_THREADS=1 julia --project=experiments experiments/t_fit_table.jl
+Set METHODS to a comma-separated subset of fd,ad,newuoa,explicit,ws to run
+only those columns (default: all).
 =#
 
 using Pkg
 Pkg.activate(@__DIR__)
 
+include(joinpath(@__DIR__, "t_generic_loss.jl"))
 using TruncatedDistributions
 using Optim
+using ADTypes: AutoForwardDiff
+using ForwardDiff
 using Optim.NLSolversBase: only_fg!
 using PRIMA
 using LinearAlgebra
@@ -65,14 +71,45 @@ end
 
 naive_p0(ν, μ̂, Σ̂) = make_param_vec_from_μ_Σ(μ̂, ((ν - 2) / ν) .* Σ̂)
 
-function fit_fd(ν, p0, a, b, μ̂, Σ̂)
-    set_kr_base_backend!(:hcubature)
-    f(p) = vector_moment_loss_t(p, ν, a, b, μ̂, Σ̂)
-    t = @elapsed res = optimize(f, p0, LBFGS(), OPTS)
-    return res.minimum, t
+struct TimeUp <: Exception end
+
+# FD and AD on the cubature loss: a single loss evaluation can take many
+# seconds here, so the 60 s cap is enforced inside the objective (as for
+# NEWUOA) and the best loss seen is reported when it fires.
+function capped(f)
+    best = Ref(Inf); t0 = time()
+    g(p) = begin
+        time() - t0 > TIME_CAP && throw(TimeUp())
+        v = f(p)
+        best[] = min(best[], ForwardDiff.value(v))
+        v
+    end
+    return g, best
 end
 
-struct TimeUp <: Exception end
+function fit_fd(ν, p0, a, b, μ̂, Σ̂)
+    g, best = capped(p -> vector_moment_loss_t_hcub(p, ν, a, b, μ̂, Σ̂))
+    t = @elapsed try
+        optimize(g, p0, LBFGS(), OPTS)
+    catch e
+        e isa TimeUp || rethrow()
+    end
+    return best[], t
+end
+
+function fit_ad(ν, p0, a, b, μ̂, Σ̂)
+    g, best = capped(p -> vector_moment_loss_t_hcub(p, ν, a, b, μ̂, Σ̂))
+    t = @elapsed try
+        optimize(g, p0, LBFGS(), OPTS; autodiff = AutoForwardDiff())
+    catch e
+        e isa TimeUp || rethrow()
+    end
+    return best[], t
+end
+
+const METHODS = split(get(ENV, "METHODS", "fd,ad,newuoa,explicit,ws"), ",")
+run_if(m, f) = m in METHODS ? (try f() catch e; @warn m e; (NaN, NaN) end) : (NaN, NaN)
+
 
 # NEWUOA has no wall-clock cap of its own; enforce the common 60 s cap by
 # aborting from inside the objective and reporting the best loss seen.
@@ -118,24 +155,31 @@ function main()
     set_loss_gamma!(1.0)
     # JIT warm-up on the cheapest row.
     let (μ̂, Σ̂, a, b, _) = targets(10.0, 2, 4), p0 = naive_p0(10.0, μ̂, Σ̂)
-        fit_fd(10.0, p0, a, b, μ̂, Σ̂); fit_newuoa(10.0, p0, a, b, μ̂, Σ̂)
-        fit_explicit(10.0, p0, a, b, μ̂, Σ̂); fit_explicit_ws(10.0, a, b, μ̂, Σ̂)
+        run_if("fd", () -> fit_fd(10.0, p0, a, b, μ̂, Σ̂))
+        run_if("ad", () -> fit_ad(10.0, p0, a, b, μ̂, Σ̂))
+        run_if("newuoa", () -> fit_newuoa(10.0, p0, a, b, μ̂, Σ̂))
+        run_if("explicit", () -> fit_explicit(10.0, p0, a, b, μ̂, Σ̂))
+        run_if("ws", () -> fit_explicit_ws(10.0, a, b, μ̂, Σ̂))
     end
     latex = String[]
-    println(@sprintf("%-5s %5s %6s  %-20s %-20s %-20s %-20s", "ex.", "ν", "m0",
-                     "LBFGS-FD", "NEWUOA", "LBFGS-explicit", "LBFGS-explicit+WS"))
+    println(@sprintf("%-5s %5s %6s  %-20s %-20s %-20s %-20s %-20s", "ex.", "ν", "m0",
+                     "LBFGS-FD", "LBFGS-AD", "NEWUOA", "LBFGS-explicit", "LBFGS-explicit+WS"))
+    rows = get(ENV, "ROWS", "")
     for ν in NUS, (id, n, idx, descr) in PANEL
+        isempty(rows) || "$(id)@$(Int(ν))" in split(rows, ",") || continue
         μ̂, Σ̂, a, b, m0 = targets(ν, n, idx)
         p0 = naive_p0(ν, μ̂, Σ̂)
-        r_fd = try fit_fd(ν, p0, a, b, μ̂, Σ̂) catch e; @warn "FD" id e; (NaN, NaN) end
-        r_nw = try fit_newuoa(ν, p0, a, b, μ̂, Σ̂) catch e; @warn "NEWUOA" id e; (NaN, NaN) end
-        r_ex = try fit_explicit(ν, p0, a, b, μ̂, Σ̂) catch e; @warn "EXP" id e; (NaN, NaN) end
-        r_ws = try fit_explicit_ws(ν, a, b, μ̂, Σ̂) catch e; @warn "WS" id e; (NaN, NaN) end
-        println(@sprintf("%-5s %5.1f %6.2f  %-20s %-20s %-20s %-20s", id, ν, m0,
-                         cell(r_fd...), cell(r_nw...), cell(r_ex...), cell(r_ws...)))
+        r_fd = run_if("fd", () -> fit_fd(ν, p0, a, b, μ̂, Σ̂))
+        r_ad = run_if("ad", () -> fit_ad(ν, p0, a, b, μ̂, Σ̂))
+        r_nw = run_if("newuoa", () -> fit_newuoa(ν, p0, a, b, μ̂, Σ̂))
+        r_ex = run_if("explicit", () -> fit_explicit(ν, p0, a, b, μ̂, Σ̂))
+        r_ws = run_if("ws", () -> fit_explicit_ws(ν, a, b, μ̂, Σ̂))
+        println(@sprintf("%-5s %5.1f %6.2f  %-20s %-20s %-20s %-20s %-20s", id, ν, m0,
+                         cell(r_fd...), cell(r_ad...), cell(r_nw...), cell(r_ex...),
+                         cell(r_ws...)))
         flush(stdout)
-        push!(latex, @sprintf("%s & %s & %g & %.2f & %s & %s & %s & %s \\\\", id, descr,
-                              ν, m0, texcell(r_fd...), texcell(r_nw...),
+        push!(latex, @sprintf("%s & %s & %g & %.2f & %s & %s & %s & %s & %s \\\\", id, descr,
+                              ν, m0, texcell(r_fd...), texcell(r_ad...), texcell(r_nw...),
                               texcell(r_ex...), texcell(r_ws...)))
     end
     println("\nLaTeX rows:")

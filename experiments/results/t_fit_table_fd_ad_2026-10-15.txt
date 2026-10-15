@@ -1,0 +1,90 @@
+ex.       ν     m0  LBFGS-FD             LBFGS-AD             NEWUOA               LBFGS-explicit       LBFGS-explicit+WS   
+2.1     4.0   0.81  0.64 / 6.5e-04       0.08 / 8.6e-04       --                   --                   --                  
+2.2     4.0   0.42  0.65 / 6.2e-04       0.08 / 9.7e-04       --                   --                   --                  
+2.3     4.0   0.36  1.60 / 9.2e-04       0.76 / 7.2e-04       --                   --                   --                  
+2.4     4.0   0.53  0.12 / 2.5e-04       0.02 / 2.5e-04       --                   --                   --                  
+3.1     4.0   0.75  44.72 / 1.2e-04      5.82 / 1.1e-04       --                   --                   --                  
+3.2     4.0   0.46  49.49 / 7.4e-04      4.59 / 6.5e-04       --                   --                   --                  
+
+[38042] signal 15: Terminated: 15
+in expression starting at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_fit_table.jl:163
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+__psynch_cvwait at /usr/lib/system/libsystem_kernel.dylib (unknown line)
+unknown function (ip: 0x0) at (unknown file)
+== at ./promotion.jl:637 [inlined]
+iterate at ./range.jl:921 [inlined]
+__generic_matvecmul! at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/matmul.jl:975
+_generic_matvecmul! at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/matmul.jl:993 [inlined]
+generic_matvecmul! at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/matmul.jl:929 [inlined]
+_mul! at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/matmul.jl:74 [inlined]
+mul! at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/matmul.jl:71 [inlined]
+mul! at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/matmul.jl:265 [inlined]
+* at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/usr/share/julia/stdlib/v1.12/LinearAlgebra/src/matmul.jl:60 [inlined]
+dens at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_generic_loss.jl:40
+GenzMalik at /Users/uqjnazar/.julia/packages/HCubature/fPcGN/src/genz-malik.jl:164
+hcubature_ at /Users/uqjnazar/.julia/packages/HCubature/fPcGN/src/HCubature.jl:153
+unknown function (ip: 0x1490752d7) at (unknown file)
+hcubature_ at /Users/uqjnazar/.julia/packages/HCubature/fPcGN/src/HCubature.jl:179
+#hcubature#3 at /Users/uqjnazar/.julia/packages/HCubature/fPcGN/src/HCubature.jl:234 [inlined]
+hcubature at /Users/uqjnazar/.julia/packages/HCubature/fPcGN/src/HCubature.jl:234 [inlined]
+#hcubature_inf#1 at /Users/uqjnazar/.julia/packages/TruncatedDistributions/EkS8e/src/hcubatureInf.jl:22
+hcubature_inf at /Users/uqjnazar/.julia/packages/TruncatedDistributions/EkS8e/src/hcubatureInf.jl:14 [inlined]
+#vector_moment_loss_t_hcub#1 at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_generic_loss.jl:43
+vector_moment_loss_t_hcub at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_generic_loss.jl:33 [inlined]
+f at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_fit_table.jl:74 [inlined]
+#finite_difference_gradient!#11 at /Users/uqjnazar/.julia/packages/FiniteDiff/Z4dvL/src/gradients.jl:436
+finite_difference_gradient! at /Users/uqjnazar/.julia/packages/FiniteDiff/Z4dvL/src/gradients.jl:390 [inlined]
+value_and_gradient! at /Users/uqjnazar/.julia/packages/DifferentiationInterface/seMaz/ext/DifferentiationInterfaceFiniteDiffExt/onearg.jl:365 [inlined]
+#OnceDifferentiable##2 at /Users/uqjnazar/.julia/packages/NLSolversBase/THQGs/src/objective_types/oncedifferentiable.jl:67
+unknown function (ip: 0x11d6681f7) at (unknown file)
+value_jacobian!! at /Users/uqjnazar/.julia/packages/NLSolversBase/THQGs/src/interface.jl:139
+value_jacobian! at /Users/uqjnazar/.julia/packages/NLSolversBase/THQGs/src/interface.jl:128
+value_jvp!! at /Users/uqjnazar/.julia/packages/NLSolversBase/THQGs/src/interface.jl:246
+value_jvp! at /Users/uqjnazar/.julia/packages/NLSolversBase/THQGs/src/interface.jl:220
+value_jvp! at /Users/uqjnazar/.julia/packages/Optim/z6105/src/Manifolds.jl:75 [inlined]
+ϕdϕ at /Users/uqjnazar/.julia/packages/LineSearches/gUVEI/src/LineSearches.jl:35 [inlined]
+bisect! at /Users/uqjnazar/.julia/packages/LineSearches/gUVEI/src/hagerzhang.jl:574
+unknown function (ip: 0x14839c603) at (unknown file)
+update! at /Users/uqjnazar/.julia/packages/LineSearches/gUVEI/src/hagerzhang.jl:544
+HagerZhang at /Users/uqjnazar/.julia/packages/LineSearches/gUVEI/src/hagerzhang.jl:347
+HagerZhang at /Users/uqjnazar/.julia/packages/LineSearches/gUVEI/src/hagerzhang.jl:108 [inlined]
+perform_linesearch! at /Users/uqjnazar/.julia/packages/Optim/z6105/src/utilities/perform_linesearch.jl:62
+unknown function (ip: 0x148414e1b) at (unknown file)
+update_state! at /Users/uqjnazar/.julia/packages/Optim/z6105/src/multivariate/solvers/first_order/l_bfgs.jl:235
+optimize at /Users/uqjnazar/.julia/packages/Optim/z6105/src/multivariate/optimize/optimize.jl:88
+unknown function (ip: 0x1482fce93) at (unknown file)
+optimize at /Users/uqjnazar/.julia/packages/Optim/z6105/src/multivariate/optimize/optimize.jl:54
+#optimize#83 at /Users/uqjnazar/.julia/packages/Optim/z6105/src/multivariate/optimize/interface.jl:225 [inlined]
+optimize at /Users/uqjnazar/.julia/packages/Optim/z6105/src/multivariate/optimize/interface.jl:216 [inlined]
+macro expansion at ./timing.jl:461 [inlined]
+fit_fd at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_fit_table.jl:75
+#main##10 at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_fit_table.jl:146 [inlined]
+run_if at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_fit_table.jl:86
+unknown function (ip: 0x1489dc4eb) at (unknown file)
+main at /Users/uqjnazar/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments/t_fit_table.jl:146
+unknown function (ip: 0x11cb7a973) at (unknown file)
+jl_apply at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/./julia.h:2391 [inlined]
+do_call at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/interpreter.c:123
+eval_stmt_value at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/interpreter.c:194
+eval_body at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/interpreter.c:689
+jl_interpret_toplevel_thunk at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/interpreter.c:898
+jl_toplevel_eval_flex at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/toplevel.c:1035
+jl_toplevel_eval_flex at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/toplevel.c:975
+ijl_toplevel_eval at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/toplevel.c:1047 [inlined]
+ijl_toplevel_eval_in at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/toplevel.c:1092
+eval at ./boot.jl:489
+include_string at ./loading.jl:2874
+_include at ./loading.jl:2934
+include at ./Base.jl:306
+exec_options at ./client.jl:317
+_start at ./client.jl:550
+jfptr__start_29115.1 at /Users/uqjnazar/.julia/juliaup/julia-1.12.6+0.aarch64.apple.darwin14/Julia-1.12.app/Contents/Resources/julia/lib/julia/sys.dylib (unknown line)
+jl_apply at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/./julia.h:2391 [inlined]
+true_main at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/jlapi.c:971
+jl_repl_entrypoint at /Users/julia/.julia/scratchspaces/a66863c6-20e8-4ff4-8a62-49f30b1f605e/agent-cache/default-honeycrisp-HL2F7YQ3XH.0/build/default-honeycrisp-HL2F7YQ3XH-0/julialang/julia-release-1-dot-12/src/jlapi.c:1139
+unknown function (ip: 0x0) at (unknown file)
+Allocations: 78507885932 (Pool: 78507885114; Big: 818); GC: 68543
+3.2     4.0   0.46  49.49 / 7.4e-04      4.59 / 6.5e-04       --                   --                   --                  

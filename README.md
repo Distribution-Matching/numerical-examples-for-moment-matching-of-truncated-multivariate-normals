@@ -27,10 +27,14 @@ experiments/tmvtnorm_comparison.jl  # paper Table "tmvtnorm": fit_mvnormal vs th
 experiments/tmvtnorm_fit.R       # R half of the above (sampling + tmvtnorm fits)
 experiments/tmvtnorm_loglik.R    # log-likelihood / residual check with tmvtnorm's
                                  #   own dtmvnorm and mtmvnorm
-experiments/t_fit_table.jl       # paper Student-t table: FD / NEWUOA / explicit /
-                                 #   explicit+WS for the truncated t, n = 2, 3, 4
-experiments/t_gradient_table.jl  # paper Student-t cost table: t vs normal gradient
-                                 #   cost, n = 2, …, 5
+experiments/tmvtnorm_adapter.jl  # tmvtnorm as a moment matcher on the fit-table
+experiments/tmvtnorm_adapter.R   #   targets, via an in-box pseudo-data set (calls R)
+experiments/t_fit_table.jl       # paper Student-t fit table: FD / AD / NEWUOA /
+                                 #   explicit / explicit+WS, n = 2, 3, 4
+experiments/t_generic_loss.jl    # type-generic cubature loss of the t (FD/AD baselines)
+experiments/t_moment_table.jl    # paper moment-cost table, t rows
+experiments/t_gradient_table.jl  # paper gradient-cost table, t columns (closed form
+                                 #   vs ForwardDiff vs FD), n = 1, …, 5
 experiments/intro_figure.py      # paper Figure 1: the introduction's worked n = 3
                                  #   example (dots + wall marginals; needs matplotlib)
 experiments/results/             # captured benchmark outputs, dated
