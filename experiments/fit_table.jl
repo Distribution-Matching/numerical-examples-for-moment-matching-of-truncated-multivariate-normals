@@ -49,7 +49,7 @@ using Statistics
 
 BLAS.set_num_threads(1)
 
-const FTARGET   = 1e-3
+const FTARGET   = 1e-4
 const MAX_ITERS = 50
 const TIME_CAP  = 60.0
 const BCD_SEED  = 20260706   # seed for the QMC base case + softmax draws
@@ -57,7 +57,7 @@ const BCD_SEED  = 20260706   # seed for the QMC base case + softmax draws
 # blocks, so the tables demonstrate joint matching of both moments. (The
 # package's released default is γ = 0.2, which prioritises the mean; see
 # the paper's Section 2.)
-const GAMMA     = 1.0        # covariance weight in L = L1 + γ·r(n)·L2
+const GAMMA     = 1.0        # covariance weight in L = ½(1/n)‖·‖² + γ·½(1/n²)‖·‖²_F
 const COMMON_OPTS = Optim.Options(show_trace = false,
                                   iterations = MAX_ITERS,
                                   time_limit = TIME_CAP,
@@ -183,11 +183,13 @@ function vector_moment_loss_hcub(p::AbstractVector{T}, a, b,
           for i in 1:n, j in 1:n]
     μA = m1 ./ m0
     ΣA = m2 ./ m0 .- μA * μA'
-    # Match the package's gamma-weighted loss L = L1 + gamma*r(n)*L2 with
-    # r(n) = 2/(n+1), so the FD/AD variants optimise the same objective as
-    # the closed-form path (fair gradient-source comparison).
-    w2 = get_loss_gamma() * 2 / (n + 1)
-    return T(0.5) * (sum(abs2, μA .- μ̂) + w2 * sum(abs2, ΣA .- Σ̂))
+    # Match the package's averaged Frobenius loss
+    # L = ½·(1/n)‖μA − μ̂‖² + γ·½·(1/n²)‖ΣA − Σ̂‖²_F, so the FD/AD variants
+    # optimise the same objective as the closed-form path (fair
+    # gradient-source comparison).
+    w1 = TruncatedDistributions._mean_weight(n)
+    w2 = TruncatedDistributions._cov_weight(n)
+    return T(0.5) * (w1 * sum(abs2, μA .- μ̂) + w2 * sum(abs2, ΣA .- Σ̂))
 end
 
 # ----------------------------------------------------------------------
@@ -398,7 +400,7 @@ function main()
     which = isempty(ARGS) ? ["A", "B", "C"] : ARGS
     set_loss_gamma!(GAMMA)   # covariance weight; all methods share it
     println("Panel targets: KR moments (n ≤ 6) / rejection sampling (n ≥ 7), rounded to 1 decimal.")
-    println("Loss L = L1 + γ·(2/(n+1))·L2 with γ = $(GAMMA); base case seeded ($(BCD_SEED)).")
+    println("Averaged loss L = ½(1/n)‖μA−μ̂‖² + γ·½(1/n²)‖ΣA−Σ̂‖²_F with γ = $(GAMMA); base case seeded ($(BCD_SEED)).")
     println("Caps: $(MAX_ITERS) iterations, $(TIME_CAP) s, target L < $(FTARGET).")
     @info "warmup (JIT)..."
     warmup()

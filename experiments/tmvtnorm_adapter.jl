@@ -71,7 +71,8 @@ function loss_gamma1(μ, Σ, a, b, μ̂, Σ̂)
     (any(isnan, μ) || any(isnan, Σ) || !isposdef(Symmetric(Σ))) && return NaN
     μA, ΣA = moments_accurate(μ, Σ, a, b)
     n = length(μ)
-    return 0.5 * (sum(abs2, μA .- μ̂) + 2 / (n + 1) * sum(abs2, ΣA .- Σ̂))
+    # averaged Frobenius loss at γ = 1, as in the package
+    return 0.5 * (sum(abs2, μA .- μ̂) / n + sum(abs2, ΣA .- Σ̂) / n^2)
 end
 
 function parse_r_coef(names, coefs, n)

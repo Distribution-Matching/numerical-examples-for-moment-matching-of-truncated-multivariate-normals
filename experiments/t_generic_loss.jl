@@ -8,8 +8,9 @@ finite-difference and ForwardDiff baselines of the Gaussian tables: it
 accepts ForwardDiff.Dual parameters, so both baselines differentiate
 through it. Included by t_gradient_table.jl and t_fit_table.jl.
 
-The loss is the package's γ-weighted L = ½‖μA − μ̂‖² + γ·r(n)·½‖ΣA − Σ̂‖²_F
-with r(n) = 2/(n+1), on the packed (μ, U) vector (UᵀU = Σ⁻¹).
+The loss is the package's averaged Frobenius loss
+L = ½·(1/n)‖μA − μ̂‖² + γ·½·(1/n²)‖ΣA − Σ̂‖²_F, on the packed (μ, U) vector
+(UᵀU = Σ⁻¹).
 =#
 
 using TruncatedDistributions
@@ -50,6 +51,7 @@ function vector_moment_loss_t_hcub(p::AbstractVector{T}, ν, a, b, μ̂, Σ̂;
     end
     μA = m1 ./ m0
     ΣA = m2 ./ m0 .- μA * μA'
-    w2 = get_loss_gamma() * 2 / (n + 1)
-    return T(0.5) * (sum(abs2, μA .- μ̂) + w2 * sum(abs2, ΣA .- Σ̂))
+    w1 = TruncatedDistributions._mean_weight(n)
+    w2 = TruncatedDistributions._cov_weight(n)
+    return T(0.5) * (w1 * sum(abs2, μA .- μ̂) + w2 * sum(abs2, ΣA .- Σ̂))
 end

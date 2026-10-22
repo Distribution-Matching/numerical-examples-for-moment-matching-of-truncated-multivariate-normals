@@ -9,7 +9,7 @@ strictly inside the axes. Pale projections of the truncated law's
 bivariate marginals sit on the far axis panes.
 
 (mu*, Sigma*) is the output of TruncatedDistributions.fit_mvnormal for
-the targets quoted in the introduction (loss ~ 2e-11); see the paper.
+the targets quoted in the introduction (loss ~ 8e-13; experiments/intro_example.jl).
 
 Usage:  python3 experiments/intro_figure.py [outdir]
 Writes intro_example.pdf and intro_example.png to outdir (default '.').

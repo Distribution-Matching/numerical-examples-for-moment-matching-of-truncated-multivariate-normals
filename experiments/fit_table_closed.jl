@@ -8,7 +8,7 @@ NEWUOA on the recursion loss. Targets are the truncated mean and
 covariance of each example, by the Kan–Robotti recursion (now affordable
 at every n of the panel), rounded to one decimal. Loss weight γ = 1;
 caps: 50 iterations, 60 s (enforced inside the objective for NEWUOA),
-target L < 1e-3. The FD and AD columns (n ≤ 4) do not depend on the
+target L < 1e-4. The FD and AD columns (n ≤ 4) do not depend on the
 recursion and come from fit_table.jl.
 
 Run from the repository root:
@@ -28,7 +28,7 @@ using Random
 
 BLAS.set_num_threads(1)
 
-const FTARGET = 1e-3
+const FTARGET = 1e-4
 const TIME_CAP = 60.0
 const SEED = 20260706
 const PANEL = [("2.1", 2, 1), ("2.2", 2, 2), ("2.3", 2, 3), ("2.4", 2, 4),

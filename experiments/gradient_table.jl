@@ -110,8 +110,8 @@ function loss(θ::AbstractVector, n::Int, a::Vector{Float64},
         Σ_A[i, j] = mij / m0 - μ_A[i] * μ_A[j]
         Σ_A[j, i] = Σ_A[i, j]
     end
-    L1 = 0.5 * sum(abs2, μ_A .- μ̂)
-    # covariance weight γ·2/(n+1), as in the package loss
+    # averaging weights 1/n and γ/n², as in the package loss
+    L1 = 0.5 * TruncatedDistributions._mean_weight(n) * sum(abs2, μ_A .- μ̂)
     L2 = 0.5 * TruncatedDistributions._cov_weight(n) * sum(abs2, Σ_A .- Σ̂)
     return L1 + L2
 end

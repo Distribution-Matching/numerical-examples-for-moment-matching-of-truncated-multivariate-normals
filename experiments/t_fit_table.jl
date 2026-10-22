@@ -7,7 +7,7 @@ the Gaussian tables, at ν ∈ {4, 10}. Targets are the truncated mean and
 covariance of t_ν(μ, Σ) for the example's (μ, Σ, A), computed by the
 truncated-t recursion on an adaptive-cubature base case and rounded to one
 decimal, as in the Gaussian tables. Every method optimises the same loss
-(γ = 1), with the same caps: 50 outer iterations, 60 s, target L < 1e-3.
+(γ = 1), with the same caps: 50 outer iterations, 60 s, target L < 1e-4.
 
   LBFGS-FD       L-BFGS with finite-difference gradients on a type-generic
                  loss built by direct adaptive cubature of the t density
@@ -44,7 +44,7 @@ using Random
 
 BLAS.set_num_threads(1)
 
-const FTARGET = 1e-3
+const FTARGET = 1e-4
 const MAX_ITERS = 50
 const TIME_CAP = 60.0
 const SEED = 20261015
