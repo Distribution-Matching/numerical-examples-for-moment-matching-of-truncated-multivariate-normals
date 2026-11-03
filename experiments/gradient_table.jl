@@ -46,7 +46,8 @@ using Random
 BLAS.set_num_threads(1)
 
 # ----------------------------------------------------------------------
-# pack / unpack between θ vector and (μ, U)
+# pack / unpack between θ vector and (μ, U); θ holds V, which is U with the
+# log of its diagonal. pack_params packs as it stands (gradients, or V).
 # ----------------------------------------------------------------------
 
 function pack_params(μ::AbstractVector, U::AbstractMatrix)
@@ -72,7 +73,7 @@ function unpack_params(θ::AbstractVector, n::Int)
         k = n
         for i in 1:n, j in i:n
             k += 1
-            U[i, j] = θ[k]
+            U[i, j] = i == j ? exp(θ[k]) : θ[k]
         end
     end
     return μ, U
@@ -126,8 +127,8 @@ function grad_explicit(n::Int, μ::Vector{Float64}, Σ::Matrix{Float64},
                        μ̂::Vector{Float64}, Σ̂::Matrix{Float64})
     set_kr_base_backend!(:mvnormalcdf)
     d = TruncatedMvNormal(μ, Σ, a, b; max_moment_levels = 4)
-    g_μ, g_U = TruncatedDistributions.grad_true_loss(d, μ̂, Σ̂)
-    return pack_params(g_μ, g_U)
+    g_μ, g_V = TruncatedDistributions.grad_true_loss(d, μ̂, Σ̂)
+    return pack_params(g_μ, g_V)
 end
 
 function grad_forwarddiff(n::Int, θ::Vector{Float64},
@@ -226,8 +227,9 @@ function eval_point(cfg::GradConfig; pert::Float64 = 0.05)
     Σ_pert = cfg.Σ .* (1 + pert)
     # Ensure PD: identity-shift if needed.
     Σ_pert = (Σ_pert + Σ_pert') / 2 + pert * I
-    U_pert = cholesky(Symmetric(inv(Σ_pert))).U
-    θ_pert = pack_params(μ_pert, U_pert)
+    V_pert = Matrix(cholesky(Symmetric(inv(Σ_pert))).U)
+    V_pert[diagind(V_pert)] .= log.(diag(V_pert))
+    θ_pert = pack_params(μ_pert, V_pert)
     return θ_pert, μ̂, Σ̂, μ_pert, Σ_pert
 end
 

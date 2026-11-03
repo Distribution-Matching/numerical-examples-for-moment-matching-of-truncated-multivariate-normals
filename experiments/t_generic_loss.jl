@@ -22,7 +22,7 @@ function unpack_generic_t(p::AbstractVector{T}, n::Int) where {T}
     U = zeros(T, n, n)
     k = n + 1
     for i in 1:n, j in i:n
-        U[i, j] = p[k]
+        U[i, j] = i == j ? exp(p[k]) : p[k]
         k += 1
     end
     return μ, U

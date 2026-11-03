@@ -895,8 +895,8 @@ version = "1.10.0"
 
 [[deps.TruncatedDistributions]]
 deps = ["ADTypes", "AdditionalDistributions", "Combinatorics", "Distributions", "ForwardDiff", "HCubature", "LinearAlgebra", "MvNormalCDF", "NLSolversBase", "Optim", "PDMats", "Parameters", "Printf", "Random", "Statistics"]
-git-tree-sha1 = "ccac04f26b851266e5b847a44c8419c1ad040171"
-repo-rev = "83b8d3f97ddeb26705f1882d20529b87bc11e2da"
+git-tree-sha1 = "e53113570d086e7b712c2001a2f627649034416a"
+repo-rev = "118c2470e66544a6809093dffe7a654b6059d464"
 repo-url = "https://github.com/Distribution-Matching/TruncatedDistributions.jl"
 uuid = "77af390e-3af4-4cd8-bbfa-7ab7569c172d"
 version = "0.6.0"

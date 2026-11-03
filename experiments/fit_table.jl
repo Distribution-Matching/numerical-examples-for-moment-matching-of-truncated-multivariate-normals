@@ -24,7 +24,7 @@ from the bundled example panel of TruncatedDistributions.jl:
 Protocol (§6.1): targets are the example's truncated moments rounded
 to 1 decimal — computed by the Kan–Robotti recursion at n ≤ 6 and by
 rejection sampling (2·10^5 accepted draws, seeded) at n ≥ 7. Caps:
-50 outer iterations, 60 s wall-clock, loss target L < 10^-3. All runs
+50 outer iterations, 60 s wall-clock, loss target L < 10^-4. All runs
 are single-threaded.
 
 Run from the repository root:
@@ -54,9 +54,7 @@ const MAX_ITERS = 50
 const TIME_CAP  = 60.0
 const BCD_SEED  = 20260706   # seed for the QMC base case + softmax draws
 # Benchmark weight: γ = 1 balances the mean- and covariance-residual
-# blocks, so the tables demonstrate joint matching of both moments. (The
-# package's released default is γ = 0.2, which prioritises the mean; see
-# the paper's Section 2.)
+# blocks, so the tables demonstrate joint matching of both moments.
 const GAMMA     = 1.0        # covariance weight in L = ½(1/n)‖·‖² + γ·½(1/n²)‖·‖²_F
 const COMMON_OPTS = Optim.Options(show_trace = false,
                                   iterations = MAX_ITERS,
@@ -160,7 +158,7 @@ function unpack_generic(p::AbstractVector{T}, n::Int) where {T}
     U = zeros(T, n, n)
     k = n + 1
     for i in 1:n, j in i:n
-        U[i, j] = p[k]
+        U[i, j] = i == j ? exp(p[k]) : p[k]
         k += 1
     end
     return μ, U

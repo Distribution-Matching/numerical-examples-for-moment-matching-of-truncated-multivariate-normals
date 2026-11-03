@@ -44,6 +44,9 @@ experiments/intro_example.jl     # paper introduction: the worked n = 3 example
                                  #   (forward moments; normal and t_5 fits)
 experiments/intro_figure.py      # paper Figure 1: the introduction's worked n = 3
                                  #   example (dots + wall marginals; needs matplotlib)
+experiments/example_moments.jl   # paper Table A.1: box probability and truncated
+                                 #   moments of each example (normal, t_4, t_10)
+experiments/example_2_3_longrun.jl  # paper §6: example 2.3 run past the caps
 experiments/results/             # captured benchmark outputs, dated
 ```
 
@@ -72,13 +75,16 @@ OPENBLAS_NUM_THREADS=1 julia --project=experiments experiments/t_moment_table.jl
 OPENBLAS_NUM_THREADS=1 julia --project=experiments experiments/t_limit.jl
 OPENBLAS_NUM_THREADS=1 julia --project=experiments experiments/intro_example.jl
 OPENBLAS_NUM_THREADS=1 julia --project=experiments experiments/tmvtnorm_adapter.jl
+OPENBLAS_NUM_THREADS=1 julia --project=experiments experiments/example_moments.jl
+OPENBLAS_NUM_THREADS=1 julia --project=experiments experiments/example_2_3_longrun.jl
 ```
 
 The `tmvtnorm` comparison needs R with the `tmvtnorm` package on the
 `PATH`; set `REUSE_R=1` to re-score saved R fits without refitting.
-The scripts need TruncatedDistributions.jl 0.6 or later, which implements
+The scripts need TruncatedDistributions.jl 0.7 or later, which implements
 the paper's averaged Frobenius loss
-`L = ½·(1/n)‖μA − μ̂‖² + γ·½·(1/n²)‖ΣA − Σ̂‖²_F`.
+`L = ½·(1/n)‖μA − μ̂‖² + γ·½·(1/n²)‖ΣA − Σ̂‖²_F` and its log-Cholesky
+parameter vector.
 
 Each script prints a human-readable summary plus ready-to-paste LaTeX
 table rows. Dependencies are declared in `experiments/Project.toml`.

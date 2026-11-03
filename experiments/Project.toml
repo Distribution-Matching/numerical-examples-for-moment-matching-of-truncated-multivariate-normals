@@ -17,7 +17,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 TruncatedDistributions = "77af390e-3af4-4cd8-bbfa-7ab7569c172d"
 
 [sources]
-# Pinned to the master commit carrying the 0.6.0 release (averaged Frobenius loss; shared
-# recursion states, truncated multivariate t, fit_mvt). Switch to the registered version (drop
-# this [sources] entry, add a [compat] bound) once 0.6.0 is in the General registry.
-TruncatedDistributions = {url = "https://github.com/Distribution-Matching/TruncatedDistributions.jl", rev = "83b8d3f97ddeb26705f1882d20529b87bc11e2da"}
+# Pinned to the master commit carrying the log-Cholesky parameterisation theta = (mu, V) and
+# gamma = 1 (unreleased, after 0.6.0). Switch to the registered version (drop this [sources]
+# entry, add a [compat] bound) once the paper is submitted and the package is released.
+TruncatedDistributions = {url = "https://github.com/Distribution-Matching/TruncatedDistributions.jl", rev = "118c2470e66544a6809093dffe7a654b6059d464"}

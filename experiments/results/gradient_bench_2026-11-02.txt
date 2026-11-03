@@ -1,0 +1,75 @@
+  Activating project at `~/git/ivana_yoni_work/numerical-examples-for-moment-matching-of-truncated-multivariate-normals/experiments`
+[ Info: config 1.1 (n = 1, P = 2 parameters): n=1: μ=0, σ=1, A=[-1, 1]
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 24\,\textmu s   AD 11\,\textmu s (err 7.3e-15)   FD 31\,\textmu s (err 1.0e-04)
+[ Info: config 1.2 (n = 1, P = 2 parameters): n=1: μ=0.5, σ=1.5, A=[-1, 2]
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 23\,\textmu s   AD 11\,\textmu s (err 1.1e-14)   FD 30\,\textmu s (err 1.0e-04)
+[ Info: config 2.1 (n = 2, P = 5 parameters): bundled n=2 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 539\,\textmu s   AD 11.0\,ms (err 1.5e-08)   FD 39.7\,ms (err 2.0e-04)
+[ Info: config 2.4 (n = 2, P = 5 parameters): bundled n=2 ex 4
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 453\,\textmu s   AD 3.7\,ms (err 2.3e-05)   FD 16.2\,ms (err 1.1e-04)
+[ Info: config 3.1 (n = 3, P = 9 parameters): bundled n=3 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     forward-mode AD...
+[ Info:     finite differences...
+[ Info:     DONE  explicit 5.3\,ms   AD 1.50\,s (err 3.4e-04)   FD 7.32\,s (err 2.9e-04)
+[ Info: config 4.1 (n = 4, P = 14 parameters): bundled n=4 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 21.3\,ms   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 5.1 (n = 5, P = 20 parameters): bundled n=5 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 118.1\,ms   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 6.1 (n = 6, P = 27 parameters): bundled n=6 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 471.7\,ms   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 7.1 (n = 7, P = 35 parameters): bundled n=7 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 1.39\,s   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 8.1 (n = 8, P = 44 parameters): bundled n=8 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 3.39\,s   AD -- (err NaN)   FD -- (err NaN)
+[ Info: config 10.1 (n = 10, P = 65 parameters): bundled n=10 ex 1
+[ Info:     explicit (closed-form)...
+[ Info:     DONE  explicit 14.03\,s   AD -- (err NaN)   FD -- (err NaN)
+
+================================================================================
+Gradient benchmark for §4 of the paper
+================================================================================
+
+Cfg  |   n |   P | explicit      | ForwardDiff   | FD (h=1e-5)   | AD err / FD err
+------------------------------------------------------------------------------------------
+1.1  |   1 |   2 | 24\,\textmu s | 11\,\textmu s | 31\,\textmu s | 7.3e-15 / 1.0e-04
+1.2  |   1 |   2 | 23\,\textmu s | 11\,\textmu s | 30\,\textmu s | 1.1e-14 / 1.0e-04
+2.1  |   2 |   5 | 539\,\textmu s | 11.0\,ms      | 39.7\,ms      | 1.5e-08 / 2.0e-04
+2.4  |   2 |   5 | 453\,\textmu s | 3.7\,ms       | 16.2\,ms      | 2.3e-05 / 1.1e-04
+3.1  |   3 |   9 | 5.3\,ms       | 1.50\,s       | 7.32\,s       | 3.4e-04 / 2.9e-04
+4.1  |   4 |  14 | 21.3\,ms      | --            | --            | NaN / NaN
+5.1  |   5 |  20 | 118.1\,ms     | --            | --            | NaN / NaN
+6.1  |   6 |  27 | 471.7\,ms     | --            | --            | NaN / NaN
+7.1  |   7 |  35 | 1.39\,s       | --            | --            | NaN / NaN
+8.1  |   8 |  44 | 3.39\,s       | --            | --            | NaN / NaN
+10.1 |  10 |  65 | 14.03\,s      | --            | --            | NaN / NaN
+
+LaTeX rows (paste into tab:grad-bench):
+1.1 & 1 & 2 & 24\,\textmu s & 11\,\textmu s & 31\,\textmu s & 7e-15 & 1.0e-04 \\
+1.2 & 1 & 2 & 23\,\textmu s & 11\,\textmu s & 30\,\textmu s & 1e-14 & 1.0e-04 \\
+2.1 & 2 & 5 & 539\,\textmu s & 11.0\,ms & 39.7\,ms & 1.5e-08 & 2.0e-04 \\
+2.4 & 2 & 5 & 453\,\textmu s & 3.7\,ms & 16.2\,ms & 2.3e-05 & 1.1e-04 \\
+3.1 & 3 & 9 & 5.3\,ms & 1.50\,s & 7.32\,s & 3.4e-04 & 2.9e-04 \\
+4.1 & 4 & 14 & 21.3\,ms & -- & -- & -- & -- \\
+5.1 & 5 & 20 & 118.1\,ms & -- & -- & -- & -- \\
+6.1 & 6 & 27 & 471.7\,ms & -- & -- & -- & -- \\
+7.1 & 7 & 35 & 1.39\,s & -- & -- & -- & -- \\
+8.1 & 8 & 44 & 3.39\,s & -- & -- & -- & -- \\
+10.1 & 10 & 65 & 14.03\,s & -- & -- & -- & -- \\
