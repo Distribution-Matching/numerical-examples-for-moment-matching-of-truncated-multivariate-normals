@@ -6,7 +6,6 @@ Distributions* (Carrizo Molina & Nazarathy).
 
 ## Companion artefacts
 
-- Paper source: <https://github.com/Distribution-Matching/paper-truncated-mv-normal>
 - Julia package: <https://github.com/Distribution-Matching/TruncatedDistributions.jl>
 
 ## Layout
