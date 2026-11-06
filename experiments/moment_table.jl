@@ -2,8 +2,9 @@
 moment_table.jl
 
 Populates Table~\ref{tab:kr-bench} in section "On efficient computation of
-truncated moments" of the paper "Moment Matching of Box Truncated
-Multivariate Normal Distributions". For each (μ, Σ, A) configuration,
+truncated moments" of the paper "Moment Matching of Box-Truncated
+Elliptical Distributions, with Efficient Implementation for the
+Multivariate Normal and Student-t". For each (μ, Σ, A) configuration,
 compute every primitive moment {m^{(κ)} : 0 ≤ |κ| ≤ 4} at the underlying
 parameters via
     (a) the Kan–Robotti recursion with the Genz–Bretz QMC base case

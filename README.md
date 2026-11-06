@@ -1,8 +1,8 @@
 # Numerical examples for moment matching of truncated multivariate normals
 
 Reproducibility scripts for the numerical examples in the paper
-*Moment Matching of Box-Truncated Multivariate Normal and Student-t
-Distributions* (Carrizo Molina & Nazarathy).
+*Moment Matching of Box-Truncated Elliptical Distributions, with
+Efficient Implementation for the Multivariate Normal and Student-t* (Carrizo Molina & Nazarathy).
 
 ## Companion artefacts
 
